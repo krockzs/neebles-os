@@ -3,7 +3,7 @@
 set -u
 
 MODE="${1:---interactive}"
-BOSS_MANIFEST_URL="https://krockzs.github.io/neebles-boss/stable/manifest.json"
+BOSS_MANIFEST_URL="https://raw.githubusercontent.com/krockzs/neebles-boss/main/release/manifest.json"
 NEEBLES_BIN="/opt/neebles/client/bin/neebles"
 
 case "$MODE" in
