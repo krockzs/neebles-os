@@ -1,0 +1,244 @@
+#!/bin/bash
+
+set -u
+
+MODE="${1:---interactive}"
+BOSS_MANIFEST_URL="https://krockzs.github.io/neebles-boss/stable/manifest.json"
+NEEBLES_BIN="/opt/neebles/client/bin/neebles"
+
+case "$MODE" in
+    --interactive)
+        LAUNCH_MODE="interactive"
+        ;;
+    --headless)
+        LAUNCH_MODE="headless"
+        ;;
+    *)
+        exit 1
+        ;;
+esac
+
+TMPDIR="$(mktemp -d)"
+MANIFEST="$TMPDIR/boss-manifest.json"
+PLAN="$TMPDIR/assets.tsv"
+LAUNCH="$TMPDIR/launch.txt"
+
+cleanup() {
+    rm -rf "$TMPDIR"
+}
+
+trap cleanup EXIT
+
+fail() {
+    echo "[N.E.E.B.L.E.S.] $1" >&2
+
+    if [ "$MODE" = "--interactive" ] && command -v kdialog >/dev/null 2>&1; then
+        kdialog --error "$1"
+    fi
+
+    exit 1
+}
+
+echo "[N.E.E.B.L.E.S.] Consultando N.E.E.B.L.E.S. Boss..."
+
+curl -LfsS \
+    --proto '=https' \
+    --tlsv1.2 \
+    --connect-timeout 4 \
+    --max-time 12 \
+    "${BOSS_MANIFEST_URL}?nocache=$(date +%s)" \
+    -o "$MANIFEST" \
+    || fail "No fue posible obtener el manifest de Boss."
+
+python3 - "$MANIFEST" "$PLAN" "$LAUNCH" "$LAUNCH_MODE" <<'PY' \
+    || fail "Manifest de Boss inválido."
+
+import json
+import re
+import sys
+
+manifest_path, plan_path, launch_path, launch_mode = sys.argv[1:]
+
+with open(manifest_path, encoding="utf-8") as f:
+    data = json.load(f)
+
+if data.get("schema") != 1:
+    raise SystemExit(1)
+
+if data.get("channel") != "stable":
+    raise SystemExit(1)
+
+version = data.get("version")
+base_url = data.get("base_url")
+assets = data.get("assets")
+launch = data.get("launch")
+
+if not isinstance(version, str) or not re.fullmatch(r"\d+\.\d+\.\d+", version):
+    raise SystemExit(1)
+
+if not isinstance(base_url, str) or not base_url.startswith("https://"):
+    raise SystemExit(1)
+
+if not isinstance(assets, dict) or not assets:
+    raise SystemExit(1)
+
+if not isinstance(launch, dict):
+    raise SystemExit(1)
+
+validated = {}
+
+for asset_id, asset in assets.items():
+    if not isinstance(asset_id, str) or not re.fullmatch(r"[A-Za-z0-9_-]+", asset_id):
+        raise SystemExit(1)
+
+    if not isinstance(asset, dict):
+        raise SystemExit(1)
+
+    filename = asset.get("file")
+    sha256 = asset.get("sha256")
+    executable = asset.get("executable")
+
+    if not isinstance(filename, str) or not filename:
+        raise SystemExit(1)
+
+    if "/" in filename or "\\" in filename:
+        raise SystemExit(1)
+
+    if not isinstance(sha256, str) or not re.fullmatch(r"[0-9a-fA-F]{64}", sha256):
+        raise SystemExit(1)
+
+    if not isinstance(executable, bool):
+        raise SystemExit(1)
+
+    validated[asset_id] = {
+        "file": filename,
+        "sha256": sha256.lower(),
+        "executable": executable
+    }
+
+mode = launch.get(launch_mode)
+
+if not isinstance(mode, dict):
+    raise SystemExit(1)
+
+entrypoint = mode.get("entrypoint")
+args = mode.get("args")
+
+if entrypoint not in validated:
+    raise SystemExit(1)
+
+if not isinstance(args, list):
+    raise SystemExit(1)
+
+for asset_id in args:
+    if asset_id not in validated:
+        raise SystemExit(1)
+
+with open(plan_path, "w", encoding="utf-8") as f:
+    for asset_id, asset in validated.items():
+        f.write(
+            f"{asset_id}\t"
+            f"{asset['file']}\t"
+            f"{asset['sha256']}\t"
+            f"{1 if asset['executable'] else 0}\n"
+        )
+
+with open(launch_path, "w", encoding="utf-8") as f:
+    f.write(version + "\n")
+    f.write(base_url + "\n")
+    f.write(entrypoint + "\n")
+
+    for asset_id in args:
+        f.write(asset_id + "\n")
+PY
+
+mapfile -t LAUNCH_DATA < "$LAUNCH"
+
+[ "${#LAUNCH_DATA[@]}" -ge 3 ] \
+    || fail "Contrato de lanzamiento incompleto."
+
+STABLE_VERSION="${LAUNCH_DATA[0]}"
+BASE_URL="${LAUNCH_DATA[1]}"
+ENTRYPOINT_ID="${LAUNCH_DATA[2]}"
+
+version_lt() {
+    [ "$1" != "$2" ] && \
+    [ "$(printf '%s\n%s\n' "$1" "$2" | sort -V | head -n1)" = "$1" ]
+}
+
+if [ -x "$NEEBLES_BIN" ]; then
+    LOCAL_VERSION="$("$NEEBLES_BIN" --version 2>/dev/null | awk '{print $NF}')" \
+        || fail "No fue posible determinar la versión local de Boss."
+
+    if ! [[ "$LOCAL_VERSION" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+        fail "La versión local de Boss es inválida: ${LOCAL_VERSION}"
+    fi
+
+    if ! version_lt "$LOCAL_VERSION" "$STABLE_VERSION"; then
+        echo "[N.E.E.B.L.E.S.] Boss ${LOCAL_VERSION} listo."
+        exec "$NEEBLES_BIN"
+    fi
+
+    echo "[N.E.E.B.L.E.S.] Actualización disponible: ${LOCAL_VERSION} -> ${STABLE_VERSION}"
+else
+    echo "[N.E.E.B.L.E.S.] Boss no instalado. Preparando ${STABLE_VERSION}..."
+fi
+
+declare -A ASSET_PATHS
+
+while IFS=$'\t' read -r asset_id filename expected_sha executable; do
+    destination="$TMPDIR/$filename"
+
+    echo "[N.E.E.B.L.E.S.] Descargando ${filename}..."
+
+    curl -LfsS \
+        --proto '=https' \
+        --tlsv1.2 \
+        --connect-timeout 4 \
+        --max-time 120 \
+        "${BASE_URL}/${filename}" \
+        -o "$destination" \
+        || fail "No fue posible descargar ${filename}."
+
+    actual_sha="$(sha256sum "$destination" | awk '{print $1}')"
+
+    [ "$actual_sha" = "$expected_sha" ] \
+        || fail "La verificación SHA-256 falló para ${filename}."
+
+    if [ "$executable" = "1" ]; then
+        chmod 700 "$destination" \
+            || fail "No fue posible preparar ${filename}."
+    fi
+
+    ASSET_PATHS["$asset_id"]="$destination"
+
+done < "$PLAN"
+
+ENTRYPOINT="${ASSET_PATHS[$ENTRYPOINT_ID]:-}"
+
+[ -n "$ENTRYPOINT" ] \
+    || fail "No fue posible resolver el entrypoint."
+
+ARGS=()
+
+for ((i=3; i<${#LAUNCH_DATA[@]}; i++)); do
+    asset_id="${LAUNCH_DATA[$i]}"
+    asset_path="${ASSET_PATHS[$asset_id]:-}"
+
+    [ -n "$asset_path" ] \
+        || fail "No fue posible resolver el asset ${asset_id}."
+
+    ARGS+=("$asset_path")
+done
+
+echo "[N.E.E.B.L.E.S.] Ejecutando Boss ${STABLE_VERSION}..."
+
+"$ENTRYPOINT" "${ARGS[@]}" \
+    || fail "La instalación o actualización de Boss falló."
+
+[ -x "$NEEBLES_BIN" ] \
+    || fail "Boss no quedó instalado correctamente."
+
+echo "[N.E.E.B.L.E.S.] Boss ${STABLE_VERSION} listo."
+
+exec "$NEEBLES_BIN"
