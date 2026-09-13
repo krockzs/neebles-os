@@ -25104,7 +25104,7 @@
                   "value": "profile"
                 },
                 {
-                  "kind": "literal",
+                  "kind": "subcommand",
                   "value": "install"
                 },
                 {
@@ -25128,7 +25128,7 @@
                   "value": "profile"
                 },
                 {
-                  "kind": "literal",
+                  "kind": "subcommand",
                   "value": "remove"
                 },
                 {
@@ -25152,7 +25152,7 @@
                   "value": "profile"
                 },
                 {
-                  "kind": "literal",
+                  "kind": "subcommand",
                   "value": "upgrade"
                 },
                 {
@@ -25176,7 +25176,7 @@
                   "value": "profile"
                 },
                 {
-                  "kind": "literal",
+                  "kind": "subcommand",
                   "value": "list"
                 }
               ]
@@ -25190,7 +25190,7 @@
                   "value": "search"
                 },
                 {
-                  "kind": "literal",
+                  "kind": "subcommand",
                   "value": "nixpkgs"
                 },
                 {
@@ -28534,10 +28534,9 @@
     },
     "flow_kinds": {
       "flag": 1084,
-      "literal": 5,
       "operand": 796,
       "operand_list": 130,
-      "subcommand": 763
+      "subcommand": 768
     },
     "variable_sources": {
       "file": 68,
