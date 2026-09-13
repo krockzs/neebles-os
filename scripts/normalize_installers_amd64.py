@@ -17,6 +17,28 @@ ALLOWED_KINDS = {
 }
 ALLOWED_ROOT_MODES = {"required", "not_required", "contextual"}
 ALLOWED_EXPECT_KEYS = {"stdout_equals"}
+ALLOWED_OPERATION_KEYS = {
+    "command",
+    "root_mode",
+    "flow",
+    "expect",
+    "variables",
+    "description",
+    "notes",
+}
+SHELL_CONTROL_TOKENS = {
+    "|",
+    "||",
+    "&&",
+    ";",
+    ">",
+    ">>",
+    "<",
+    "<<",
+    "2>",
+    "2>>",
+    "&>",
+}
 
 
 def is_scalar(value):
@@ -101,6 +123,10 @@ def validate_operation(distribution_id, installer_id, operation_id, operation):
     if not isinstance(operation, dict):
         raise ValueError(f"{prefix}: operation must be an object")
 
+    unknown_keys = set(operation) - ALLOWED_OPERATION_KEYS
+    if unknown_keys:
+        raise ValueError(f"{prefix}: unsupported operation fields {sorted(unknown_keys)}")
+
     command = operation.get("command")
     if not isinstance(command, str) or not command:
         raise ValueError(f"{prefix}: missing command")
@@ -123,6 +149,11 @@ def validate_operation(distribution_id, installer_id, operation_id, operation):
         if kind in {"subcommand", "flag", "literal", "separator"}:
             if "value" not in item or not is_scalar(item["value"]):
                 raise ValueError(f"{prefix}: {kind} requires scalar value")
+            if isinstance(item["value"], str) and item["value"] in SHELL_CONTROL_TOKENS:
+                raise ValueError(
+                    f"{prefix}: flow[{index}] contains shell control token {item['value']!r}; "
+                    "Boss executes argv directly and shell semantics require an explicit engine capability"
+                )
         elif kind == "operand_list":
             if not isinstance(item.get("source"), str) or not item["source"]:
                 raise ValueError(f"{prefix}: operand_list requires source")
@@ -143,6 +174,20 @@ def validate_operation(distribution_id, installer_id, operation_id, operation):
         unsupported = set(expect) - ALLOWED_EXPECT_KEYS
         if unsupported:
             raise ValueError(f"{prefix}: unsupported expect keys {sorted(unsupported)}")
+        if "stdout_equals" in expect and not isinstance(expect["stdout_equals"], str):
+            raise ValueError(f"{prefix}: expect.stdout_equals must be a string")
+
+    variables = operation.get("variables")
+    if variables is not None:
+        if not isinstance(variables, dict):
+            raise ValueError(f"{prefix}: variables must be an object")
+        for name, spec in variables.items():
+            if not isinstance(spec, dict):
+                raise ValueError(f"{prefix}: variable {name!r} spec must be an object")
+            if spec.get("type") not in {"scalar", "array", "scalar_or_array"}:
+                raise ValueError(f"{prefix}: variable {name!r} has unsupported type {spec.get('type')!r}")
+            if spec.get("required") is not True:
+                raise ValueError(f"{prefix}: variable {name!r} must currently be explicitly required=true")
 
 
 def main():
@@ -160,6 +205,7 @@ def main():
         "La normalización semántica nunca cambia el argv efectivo: sólo clasifica mejor cada pieza del flow.",
         "Todo probe puramente de versión/ayuda es no privilegiado.",
         "El diccionario completo debe pasar validación estructural antes de publicarse.",
+        "Los operadores de shell no se representan como argv ordinario: requieren una capacidad explícita del motor.",
     ]:
         if rule not in rules:
             rules.append(rule)
@@ -180,6 +226,9 @@ def main():
     root_modes = Counter()
     kinds = Counter()
     variable_sources = Counter()
+    operation_keys = Counter()
+    flow_keys = Counter()
+    literal_contexts = []
 
     for distribution_id, distribution in distributions.items():
         if not isinstance(distribution, dict):
@@ -226,11 +275,24 @@ def main():
                 validate_operation(distribution_id, installer_id, operation_id, operation)
 
                 root_modes[operation["root_mode"]] += 1
-                for item in operation["flow"]:
+                for key in operation:
+                    operation_keys[key] += 1
+
+                for index, item in enumerate(operation["flow"]):
                     stats["flow_items"] += 1
                     kinds[item["kind"]] += 1
+                    for key in item:
+                        flow_keys[key] += 1
                     if item.get("source"):
                         variable_sources[item["source"]] += 1
+                    if item.get("kind") == "literal":
+                        literal_contexts.append({
+                            "distribution": distribution_id,
+                            "installer": installer_id,
+                            "operation": operation_id,
+                            "index": index,
+                            "value": item.get("value"),
+                        })
 
     data["dictionary_stats"] = {
         "distributions": stats["distributions"],
@@ -240,6 +302,9 @@ def main():
         "root_modes": dict(sorted(root_modes.items())),
         "flow_kinds": dict(sorted(kinds.items())),
         "variable_sources": dict(sorted(variable_sources.items())),
+        "operation_fields": dict(sorted(operation_keys.items())),
+        "flow_fields": dict(sorted(flow_keys.items())),
+        "literal_items": literal_contexts,
     }
 
     PATH.write_text(json.dumps(data, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
