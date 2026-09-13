@@ -3,6 +3,7 @@ name: Normalize AMD64 installer dictionary
 on:
   push:
     paths:
+      - "config/installers/instaladores_amd64.json"
       - "scripts/normalize_installers_amd64.py"
       - ".github/workflows/normalize-installers-amd64.yml"
   workflow_dispatch:
