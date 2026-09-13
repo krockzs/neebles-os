@@ -115,7 +115,7 @@
           "operations": {
             "probe": {
               "command": "apt",
-              "root_mode": "required",
+              "root_mode": "not_required",
               "flow": [
                 {
                   "kind": "flag",
@@ -128,7 +128,7 @@
               "root_mode": "required",
               "flow": [
                 {
-                  "kind": "literal",
+                  "kind": "subcommand",
                   "value": "install"
                 },
                 {
@@ -136,8 +136,8 @@
                   "value": "-y"
                 },
                 {
-                  "kind": "operand",
-                  "source": "package"
+                  "kind": "operand_list",
+                  "source": "packages"
                 }
               ]
             },
@@ -146,7 +146,7 @@
               "root_mode": "required",
               "flow": [
                 {
-                  "kind": "literal",
+                  "kind": "subcommand",
                   "value": "remove"
                 },
                 {
@@ -154,8 +154,8 @@
                   "value": "-y"
                 },
                 {
-                  "kind": "operand",
-                  "source": "package"
+                  "kind": "operand_list",
+                  "source": "packages"
                 }
               ]
             },
@@ -164,7 +164,7 @@
               "root_mode": "required",
               "flow": [
                 {
-                  "kind": "literal",
+                  "kind": "subcommand",
                   "value": "purge"
                 },
                 {
@@ -172,8 +172,8 @@
                   "value": "-y"
                 },
                 {
-                  "kind": "operand",
-                  "source": "package"
+                  "kind": "operand_list",
+                  "source": "packages"
                 }
               ]
             },
@@ -182,7 +182,7 @@
               "root_mode": "required",
               "flow": [
                 {
-                  "kind": "literal",
+                  "kind": "subcommand",
                   "value": "update"
                 }
               ]
@@ -192,7 +192,7 @@
               "root_mode": "required",
               "flow": [
                 {
-                  "kind": "literal",
+                  "kind": "subcommand",
                   "value": "upgrade"
                 },
                 {
@@ -206,7 +206,7 @@
               "root_mode": "required",
               "flow": [
                 {
-                  "kind": "literal",
+                  "kind": "subcommand",
                   "value": "full-upgrade"
                 },
                 {
@@ -217,10 +217,10 @@
             },
             "search": {
               "command": "apt",
-              "root_mode": "required",
+              "root_mode": "not_required",
               "flow": [
                 {
-                  "kind": "literal",
+                  "kind": "subcommand",
                   "value": "search"
                 },
                 {
@@ -231,10 +231,10 @@
             },
             "info": {
               "command": "apt",
-              "root_mode": "required",
+              "root_mode": "not_required",
               "flow": [
                 {
-                  "kind": "literal",
+                  "kind": "subcommand",
                   "value": "show"
                 },
                 {
@@ -1024,7 +1024,7 @@
           "operations": {
             "probe": {
               "command": "apt",
-              "root_mode": "required",
+              "root_mode": "not_required",
               "flow": [
                 {
                   "kind": "flag",
@@ -1037,7 +1037,7 @@
               "root_mode": "required",
               "flow": [
                 {
-                  "kind": "literal",
+                  "kind": "subcommand",
                   "value": "install"
                 },
                 {
@@ -1045,8 +1045,8 @@
                   "value": "-y"
                 },
                 {
-                  "kind": "operand",
-                  "source": "package"
+                  "kind": "operand_list",
+                  "source": "packages"
                 }
               ]
             },
@@ -1055,7 +1055,7 @@
               "root_mode": "required",
               "flow": [
                 {
-                  "kind": "literal",
+                  "kind": "subcommand",
                   "value": "remove"
                 },
                 {
@@ -1063,8 +1063,8 @@
                   "value": "-y"
                 },
                 {
-                  "kind": "operand",
-                  "source": "package"
+                  "kind": "operand_list",
+                  "source": "packages"
                 }
               ]
             },
@@ -1073,7 +1073,7 @@
               "root_mode": "required",
               "flow": [
                 {
-                  "kind": "literal",
+                  "kind": "subcommand",
                   "value": "purge"
                 },
                 {
@@ -1081,8 +1081,8 @@
                   "value": "-y"
                 },
                 {
-                  "kind": "operand",
-                  "source": "package"
+                  "kind": "operand_list",
+                  "source": "packages"
                 }
               ]
             },
@@ -1091,7 +1091,7 @@
               "root_mode": "required",
               "flow": [
                 {
-                  "kind": "literal",
+                  "kind": "subcommand",
                   "value": "update"
                 }
               ]
@@ -1101,7 +1101,7 @@
               "root_mode": "required",
               "flow": [
                 {
-                  "kind": "literal",
+                  "kind": "subcommand",
                   "value": "upgrade"
                 },
                 {
@@ -1115,7 +1115,7 @@
               "root_mode": "required",
               "flow": [
                 {
-                  "kind": "literal",
+                  "kind": "subcommand",
                   "value": "full-upgrade"
                 },
                 {
@@ -1126,10 +1126,10 @@
             },
             "search": {
               "command": "apt",
-              "root_mode": "required",
+              "root_mode": "not_required",
               "flow": [
                 {
-                  "kind": "literal",
+                  "kind": "subcommand",
                   "value": "search"
                 },
                 {
@@ -1140,10 +1140,10 @@
             },
             "info": {
               "command": "apt",
-              "root_mode": "required",
+              "root_mode": "not_required",
               "flow": [
                 {
-                  "kind": "literal",
+                  "kind": "subcommand",
                   "value": "show"
                 },
                 {
@@ -1929,7 +1929,7 @@
           "operations": {
             "probe": {
               "command": "apt",
-              "root_mode": "required",
+              "root_mode": "not_required",
               "flow": [
                 {
                   "kind": "flag",
@@ -1942,7 +1942,7 @@
               "root_mode": "required",
               "flow": [
                 {
-                  "kind": "literal",
+                  "kind": "subcommand",
                   "value": "install"
                 },
                 {
@@ -1950,8 +1950,8 @@
                   "value": "-y"
                 },
                 {
-                  "kind": "operand",
-                  "source": "package"
+                  "kind": "operand_list",
+                  "source": "packages"
                 }
               ]
             },
@@ -1960,7 +1960,7 @@
               "root_mode": "required",
               "flow": [
                 {
-                  "kind": "literal",
+                  "kind": "subcommand",
                   "value": "remove"
                 },
                 {
@@ -1968,8 +1968,8 @@
                   "value": "-y"
                 },
                 {
-                  "kind": "operand",
-                  "source": "package"
+                  "kind": "operand_list",
+                  "source": "packages"
                 }
               ]
             },
@@ -1978,7 +1978,7 @@
               "root_mode": "required",
               "flow": [
                 {
-                  "kind": "literal",
+                  "kind": "subcommand",
                   "value": "purge"
                 },
                 {
@@ -1986,8 +1986,8 @@
                   "value": "-y"
                 },
                 {
-                  "kind": "operand",
-                  "source": "package"
+                  "kind": "operand_list",
+                  "source": "packages"
                 }
               ]
             },
@@ -1996,7 +1996,7 @@
               "root_mode": "required",
               "flow": [
                 {
-                  "kind": "literal",
+                  "kind": "subcommand",
                   "value": "update"
                 }
               ]
@@ -2006,7 +2006,7 @@
               "root_mode": "required",
               "flow": [
                 {
-                  "kind": "literal",
+                  "kind": "subcommand",
                   "value": "upgrade"
                 },
                 {
@@ -2020,7 +2020,7 @@
               "root_mode": "required",
               "flow": [
                 {
-                  "kind": "literal",
+                  "kind": "subcommand",
                   "value": "full-upgrade"
                 },
                 {
@@ -2031,10 +2031,10 @@
             },
             "search": {
               "command": "apt",
-              "root_mode": "required",
+              "root_mode": "not_required",
               "flow": [
                 {
-                  "kind": "literal",
+                  "kind": "subcommand",
                   "value": "search"
                 },
                 {
@@ -2045,10 +2045,10 @@
             },
             "info": {
               "command": "apt",
-              "root_mode": "required",
+              "root_mode": "not_required",
               "flow": [
                 {
-                  "kind": "literal",
+                  "kind": "subcommand",
                   "value": "show"
                 },
                 {
@@ -2733,7 +2733,7 @@
           "operations": {
             "probe": {
               "command": "apt",
-              "root_mode": "required",
+              "root_mode": "not_required",
               "flow": [
                 {
                   "kind": "flag",
@@ -2746,7 +2746,7 @@
               "root_mode": "required",
               "flow": [
                 {
-                  "kind": "literal",
+                  "kind": "subcommand",
                   "value": "install"
                 },
                 {
@@ -2754,8 +2754,8 @@
                   "value": "-y"
                 },
                 {
-                  "kind": "operand",
-                  "source": "package"
+                  "kind": "operand_list",
+                  "source": "packages"
                 }
               ]
             },
@@ -2764,7 +2764,7 @@
               "root_mode": "required",
               "flow": [
                 {
-                  "kind": "literal",
+                  "kind": "subcommand",
                   "value": "remove"
                 },
                 {
@@ -2772,8 +2772,8 @@
                   "value": "-y"
                 },
                 {
-                  "kind": "operand",
-                  "source": "package"
+                  "kind": "operand_list",
+                  "source": "packages"
                 }
               ]
             },
@@ -2782,7 +2782,7 @@
               "root_mode": "required",
               "flow": [
                 {
-                  "kind": "literal",
+                  "kind": "subcommand",
                   "value": "purge"
                 },
                 {
@@ -2790,8 +2790,8 @@
                   "value": "-y"
                 },
                 {
-                  "kind": "operand",
-                  "source": "package"
+                  "kind": "operand_list",
+                  "source": "packages"
                 }
               ]
             },
@@ -2800,7 +2800,7 @@
               "root_mode": "required",
               "flow": [
                 {
-                  "kind": "literal",
+                  "kind": "subcommand",
                   "value": "update"
                 }
               ]
@@ -2810,7 +2810,7 @@
               "root_mode": "required",
               "flow": [
                 {
-                  "kind": "literal",
+                  "kind": "subcommand",
                   "value": "upgrade"
                 },
                 {
@@ -2824,7 +2824,7 @@
               "root_mode": "required",
               "flow": [
                 {
-                  "kind": "literal",
+                  "kind": "subcommand",
                   "value": "full-upgrade"
                 },
                 {
@@ -2835,10 +2835,10 @@
             },
             "search": {
               "command": "apt",
-              "root_mode": "required",
+              "root_mode": "not_required",
               "flow": [
                 {
-                  "kind": "literal",
+                  "kind": "subcommand",
                   "value": "search"
                 },
                 {
@@ -2849,10 +2849,10 @@
             },
             "info": {
               "command": "apt",
-              "root_mode": "required",
+              "root_mode": "not_required",
               "flow": [
                 {
-                  "kind": "literal",
+                  "kind": "subcommand",
                   "value": "show"
                 },
                 {
@@ -3386,7 +3386,7 @@
           "operations": {
             "probe": {
               "command": "apt",
-              "root_mode": "required",
+              "root_mode": "not_required",
               "flow": [
                 {
                   "kind": "flag",
@@ -3399,7 +3399,7 @@
               "root_mode": "required",
               "flow": [
                 {
-                  "kind": "literal",
+                  "kind": "subcommand",
                   "value": "install"
                 },
                 {
@@ -3407,8 +3407,8 @@
                   "value": "-y"
                 },
                 {
-                  "kind": "operand",
-                  "source": "package"
+                  "kind": "operand_list",
+                  "source": "packages"
                 }
               ]
             },
@@ -3417,7 +3417,7 @@
               "root_mode": "required",
               "flow": [
                 {
-                  "kind": "literal",
+                  "kind": "subcommand",
                   "value": "remove"
                 },
                 {
@@ -3425,8 +3425,8 @@
                   "value": "-y"
                 },
                 {
-                  "kind": "operand",
-                  "source": "package"
+                  "kind": "operand_list",
+                  "source": "packages"
                 }
               ]
             },
@@ -3435,7 +3435,7 @@
               "root_mode": "required",
               "flow": [
                 {
-                  "kind": "literal",
+                  "kind": "subcommand",
                   "value": "purge"
                 },
                 {
@@ -3443,8 +3443,8 @@
                   "value": "-y"
                 },
                 {
-                  "kind": "operand",
-                  "source": "package"
+                  "kind": "operand_list",
+                  "source": "packages"
                 }
               ]
             },
@@ -3453,7 +3453,7 @@
               "root_mode": "required",
               "flow": [
                 {
-                  "kind": "literal",
+                  "kind": "subcommand",
                   "value": "update"
                 }
               ]
@@ -3463,7 +3463,7 @@
               "root_mode": "required",
               "flow": [
                 {
-                  "kind": "literal",
+                  "kind": "subcommand",
                   "value": "upgrade"
                 },
                 {
@@ -3477,7 +3477,7 @@
               "root_mode": "required",
               "flow": [
                 {
-                  "kind": "literal",
+                  "kind": "subcommand",
                   "value": "full-upgrade"
                 },
                 {
@@ -3488,10 +3488,10 @@
             },
             "search": {
               "command": "apt",
-              "root_mode": "required",
+              "root_mode": "not_required",
               "flow": [
                 {
-                  "kind": "literal",
+                  "kind": "subcommand",
                   "value": "search"
                 },
                 {
@@ -3502,10 +3502,10 @@
             },
             "info": {
               "command": "apt",
-              "root_mode": "required",
+              "root_mode": "not_required",
               "flow": [
                 {
-                  "kind": "literal",
+                  "kind": "subcommand",
                   "value": "show"
                 },
                 {
@@ -4039,7 +4039,7 @@
           "operations": {
             "probe": {
               "command": "apt",
-              "root_mode": "required",
+              "root_mode": "not_required",
               "flow": [
                 {
                   "kind": "flag",
@@ -4052,7 +4052,7 @@
               "root_mode": "required",
               "flow": [
                 {
-                  "kind": "literal",
+                  "kind": "subcommand",
                   "value": "install"
                 },
                 {
@@ -4060,8 +4060,8 @@
                   "value": "-y"
                 },
                 {
-                  "kind": "operand",
-                  "source": "package"
+                  "kind": "operand_list",
+                  "source": "packages"
                 }
               ]
             },
@@ -4070,7 +4070,7 @@
               "root_mode": "required",
               "flow": [
                 {
-                  "kind": "literal",
+                  "kind": "subcommand",
                   "value": "remove"
                 },
                 {
@@ -4078,8 +4078,8 @@
                   "value": "-y"
                 },
                 {
-                  "kind": "operand",
-                  "source": "package"
+                  "kind": "operand_list",
+                  "source": "packages"
                 }
               ]
             },
@@ -4088,7 +4088,7 @@
               "root_mode": "required",
               "flow": [
                 {
-                  "kind": "literal",
+                  "kind": "subcommand",
                   "value": "purge"
                 },
                 {
@@ -4096,8 +4096,8 @@
                   "value": "-y"
                 },
                 {
-                  "kind": "operand",
-                  "source": "package"
+                  "kind": "operand_list",
+                  "source": "packages"
                 }
               ]
             },
@@ -4106,7 +4106,7 @@
               "root_mode": "required",
               "flow": [
                 {
-                  "kind": "literal",
+                  "kind": "subcommand",
                   "value": "update"
                 }
               ]
@@ -4116,7 +4116,7 @@
               "root_mode": "required",
               "flow": [
                 {
-                  "kind": "literal",
+                  "kind": "subcommand",
                   "value": "upgrade"
                 },
                 {
@@ -4130,7 +4130,7 @@
               "root_mode": "required",
               "flow": [
                 {
-                  "kind": "literal",
+                  "kind": "subcommand",
                   "value": "full-upgrade"
                 },
                 {
@@ -4141,10 +4141,10 @@
             },
             "search": {
               "command": "apt",
-              "root_mode": "required",
+              "root_mode": "not_required",
               "flow": [
                 {
-                  "kind": "literal",
+                  "kind": "subcommand",
                   "value": "search"
                 },
                 {
@@ -4155,10 +4155,10 @@
             },
             "info": {
               "command": "apt",
-              "root_mode": "required",
+              "root_mode": "not_required",
               "flow": [
                 {
-                  "kind": "literal",
+                  "kind": "subcommand",
                   "value": "show"
                 },
                 {
@@ -4843,7 +4843,7 @@
           "operations": {
             "probe": {
               "command": "apt",
-              "root_mode": "required",
+              "root_mode": "not_required",
               "flow": [
                 {
                   "kind": "flag",
@@ -4856,7 +4856,7 @@
               "root_mode": "required",
               "flow": [
                 {
-                  "kind": "literal",
+                  "kind": "subcommand",
                   "value": "install"
                 },
                 {
@@ -4864,8 +4864,8 @@
                   "value": "-y"
                 },
                 {
-                  "kind": "operand",
-                  "source": "package"
+                  "kind": "operand_list",
+                  "source": "packages"
                 }
               ]
             },
@@ -4874,7 +4874,7 @@
               "root_mode": "required",
               "flow": [
                 {
-                  "kind": "literal",
+                  "kind": "subcommand",
                   "value": "remove"
                 },
                 {
@@ -4882,8 +4882,8 @@
                   "value": "-y"
                 },
                 {
-                  "kind": "operand",
-                  "source": "package"
+                  "kind": "operand_list",
+                  "source": "packages"
                 }
               ]
             },
@@ -4892,7 +4892,7 @@
               "root_mode": "required",
               "flow": [
                 {
-                  "kind": "literal",
+                  "kind": "subcommand",
                   "value": "purge"
                 },
                 {
@@ -4900,8 +4900,8 @@
                   "value": "-y"
                 },
                 {
-                  "kind": "operand",
-                  "source": "package"
+                  "kind": "operand_list",
+                  "source": "packages"
                 }
               ]
             },
@@ -4910,7 +4910,7 @@
               "root_mode": "required",
               "flow": [
                 {
-                  "kind": "literal",
+                  "kind": "subcommand",
                   "value": "update"
                 }
               ]
@@ -4920,7 +4920,7 @@
               "root_mode": "required",
               "flow": [
                 {
-                  "kind": "literal",
+                  "kind": "subcommand",
                   "value": "upgrade"
                 },
                 {
@@ -4934,7 +4934,7 @@
               "root_mode": "required",
               "flow": [
                 {
-                  "kind": "literal",
+                  "kind": "subcommand",
                   "value": "full-upgrade"
                 },
                 {
@@ -4945,10 +4945,10 @@
             },
             "search": {
               "command": "apt",
-              "root_mode": "required",
+              "root_mode": "not_required",
               "flow": [
                 {
-                  "kind": "literal",
+                  "kind": "subcommand",
                   "value": "search"
                 },
                 {
@@ -4959,10 +4959,10 @@
             },
             "info": {
               "command": "apt",
-              "root_mode": "required",
+              "root_mode": "not_required",
               "flow": [
                 {
-                  "kind": "literal",
+                  "kind": "subcommand",
                   "value": "show"
                 },
                 {
@@ -5524,7 +5524,7 @@
           "operations": {
             "probe": {
               "command": "apt",
-              "root_mode": "required",
+              "root_mode": "not_required",
               "flow": [
                 {
                   "kind": "flag",
@@ -5537,7 +5537,7 @@
               "root_mode": "required",
               "flow": [
                 {
-                  "kind": "literal",
+                  "kind": "subcommand",
                   "value": "install"
                 },
                 {
@@ -5545,8 +5545,8 @@
                   "value": "-y"
                 },
                 {
-                  "kind": "operand",
-                  "source": "package"
+                  "kind": "operand_list",
+                  "source": "packages"
                 }
               ]
             },
@@ -5555,7 +5555,7 @@
               "root_mode": "required",
               "flow": [
                 {
-                  "kind": "literal",
+                  "kind": "subcommand",
                   "value": "remove"
                 },
                 {
@@ -5563,8 +5563,8 @@
                   "value": "-y"
                 },
                 {
-                  "kind": "operand",
-                  "source": "package"
+                  "kind": "operand_list",
+                  "source": "packages"
                 }
               ]
             },
@@ -5573,7 +5573,7 @@
               "root_mode": "required",
               "flow": [
                 {
-                  "kind": "literal",
+                  "kind": "subcommand",
                   "value": "purge"
                 },
                 {
@@ -5581,8 +5581,8 @@
                   "value": "-y"
                 },
                 {
-                  "kind": "operand",
-                  "source": "package"
+                  "kind": "operand_list",
+                  "source": "packages"
                 }
               ]
             },
@@ -5591,7 +5591,7 @@
               "root_mode": "required",
               "flow": [
                 {
-                  "kind": "literal",
+                  "kind": "subcommand",
                   "value": "update"
                 }
               ]
@@ -5601,7 +5601,7 @@
               "root_mode": "required",
               "flow": [
                 {
-                  "kind": "literal",
+                  "kind": "subcommand",
                   "value": "upgrade"
                 },
                 {
@@ -5615,7 +5615,7 @@
               "root_mode": "required",
               "flow": [
                 {
-                  "kind": "literal",
+                  "kind": "subcommand",
                   "value": "full-upgrade"
                 },
                 {
@@ -5626,10 +5626,10 @@
             },
             "search": {
               "command": "apt",
-              "root_mode": "required",
+              "root_mode": "not_required",
               "flow": [
                 {
-                  "kind": "literal",
+                  "kind": "subcommand",
                   "value": "search"
                 },
                 {
@@ -5640,10 +5640,10 @@
             },
             "info": {
               "command": "apt",
-              "root_mode": "required",
+              "root_mode": "not_required",
               "flow": [
                 {
-                  "kind": "literal",
+                  "kind": "subcommand",
                   "value": "show"
                 },
                 {
@@ -6306,7 +6306,7 @@
           "operations": {
             "probe": {
               "command": "apt",
-              "root_mode": "required",
+              "root_mode": "not_required",
               "flow": [
                 {
                   "kind": "flag",
@@ -6319,7 +6319,7 @@
               "root_mode": "required",
               "flow": [
                 {
-                  "kind": "literal",
+                  "kind": "subcommand",
                   "value": "install"
                 },
                 {
@@ -6327,8 +6327,8 @@
                   "value": "-y"
                 },
                 {
-                  "kind": "operand",
-                  "source": "package"
+                  "kind": "operand_list",
+                  "source": "packages"
                 }
               ]
             },
@@ -6337,7 +6337,7 @@
               "root_mode": "required",
               "flow": [
                 {
-                  "kind": "literal",
+                  "kind": "subcommand",
                   "value": "remove"
                 },
                 {
@@ -6345,8 +6345,8 @@
                   "value": "-y"
                 },
                 {
-                  "kind": "operand",
-                  "source": "package"
+                  "kind": "operand_list",
+                  "source": "packages"
                 }
               ]
             },
@@ -6355,7 +6355,7 @@
               "root_mode": "required",
               "flow": [
                 {
-                  "kind": "literal",
+                  "kind": "subcommand",
                   "value": "purge"
                 },
                 {
@@ -6363,8 +6363,8 @@
                   "value": "-y"
                 },
                 {
-                  "kind": "operand",
-                  "source": "package"
+                  "kind": "operand_list",
+                  "source": "packages"
                 }
               ]
             },
@@ -6373,7 +6373,7 @@
               "root_mode": "required",
               "flow": [
                 {
-                  "kind": "literal",
+                  "kind": "subcommand",
                   "value": "update"
                 }
               ]
@@ -6383,7 +6383,7 @@
               "root_mode": "required",
               "flow": [
                 {
-                  "kind": "literal",
+                  "kind": "subcommand",
                   "value": "upgrade"
                 },
                 {
@@ -6397,7 +6397,7 @@
               "root_mode": "required",
               "flow": [
                 {
-                  "kind": "literal",
+                  "kind": "subcommand",
                   "value": "full-upgrade"
                 },
                 {
@@ -6408,10 +6408,10 @@
             },
             "search": {
               "command": "apt",
-              "root_mode": "required",
+              "root_mode": "not_required",
               "flow": [
                 {
-                  "kind": "literal",
+                  "kind": "subcommand",
                   "value": "search"
                 },
                 {
@@ -6422,10 +6422,10 @@
             },
             "info": {
               "command": "apt",
-              "root_mode": "required",
+              "root_mode": "not_required",
               "flow": [
                 {
-                  "kind": "literal",
+                  "kind": "subcommand",
                   "value": "show"
                 },
                 {
@@ -7110,7 +7110,7 @@
           "operations": {
             "probe": {
               "command": "apt",
-              "root_mode": "required",
+              "root_mode": "not_required",
               "flow": [
                 {
                   "kind": "flag",
@@ -7123,7 +7123,7 @@
               "root_mode": "required",
               "flow": [
                 {
-                  "kind": "literal",
+                  "kind": "subcommand",
                   "value": "install"
                 },
                 {
@@ -7131,8 +7131,8 @@
                   "value": "-y"
                 },
                 {
-                  "kind": "operand",
-                  "source": "package"
+                  "kind": "operand_list",
+                  "source": "packages"
                 }
               ]
             },
@@ -7141,7 +7141,7 @@
               "root_mode": "required",
               "flow": [
                 {
-                  "kind": "literal",
+                  "kind": "subcommand",
                   "value": "remove"
                 },
                 {
@@ -7149,8 +7149,8 @@
                   "value": "-y"
                 },
                 {
-                  "kind": "operand",
-                  "source": "package"
+                  "kind": "operand_list",
+                  "source": "packages"
                 }
               ]
             },
@@ -7159,7 +7159,7 @@
               "root_mode": "required",
               "flow": [
                 {
-                  "kind": "literal",
+                  "kind": "subcommand",
                   "value": "purge"
                 },
                 {
@@ -7167,8 +7167,8 @@
                   "value": "-y"
                 },
                 {
-                  "kind": "operand",
-                  "source": "package"
+                  "kind": "operand_list",
+                  "source": "packages"
                 }
               ]
             },
@@ -7177,7 +7177,7 @@
               "root_mode": "required",
               "flow": [
                 {
-                  "kind": "literal",
+                  "kind": "subcommand",
                   "value": "update"
                 }
               ]
@@ -7187,7 +7187,7 @@
               "root_mode": "required",
               "flow": [
                 {
-                  "kind": "literal",
+                  "kind": "subcommand",
                   "value": "upgrade"
                 },
                 {
@@ -7201,7 +7201,7 @@
               "root_mode": "required",
               "flow": [
                 {
-                  "kind": "literal",
+                  "kind": "subcommand",
                   "value": "full-upgrade"
                 },
                 {
@@ -7212,10 +7212,10 @@
             },
             "search": {
               "command": "apt",
-              "root_mode": "required",
+              "root_mode": "not_required",
               "flow": [
                 {
-                  "kind": "literal",
+                  "kind": "subcommand",
                   "value": "search"
                 },
                 {
@@ -7226,10 +7226,10 @@
             },
             "info": {
               "command": "apt",
-              "root_mode": "required",
+              "root_mode": "not_required",
               "flow": [
                 {
-                  "kind": "literal",
+                  "kind": "subcommand",
                   "value": "show"
                 },
                 {
@@ -7763,7 +7763,7 @@
           "operations": {
             "probe": {
               "command": "apt",
-              "root_mode": "required",
+              "root_mode": "not_required",
               "flow": [
                 {
                   "kind": "flag",
@@ -7776,7 +7776,7 @@
               "root_mode": "required",
               "flow": [
                 {
-                  "kind": "literal",
+                  "kind": "subcommand",
                   "value": "install"
                 },
                 {
@@ -7784,8 +7784,8 @@
                   "value": "-y"
                 },
                 {
-                  "kind": "operand",
-                  "source": "package"
+                  "kind": "operand_list",
+                  "source": "packages"
                 }
               ]
             },
@@ -7794,7 +7794,7 @@
               "root_mode": "required",
               "flow": [
                 {
-                  "kind": "literal",
+                  "kind": "subcommand",
                   "value": "remove"
                 },
                 {
@@ -7802,8 +7802,8 @@
                   "value": "-y"
                 },
                 {
-                  "kind": "operand",
-                  "source": "package"
+                  "kind": "operand_list",
+                  "source": "packages"
                 }
               ]
             },
@@ -7812,7 +7812,7 @@
               "root_mode": "required",
               "flow": [
                 {
-                  "kind": "literal",
+                  "kind": "subcommand",
                   "value": "purge"
                 },
                 {
@@ -7820,8 +7820,8 @@
                   "value": "-y"
                 },
                 {
-                  "kind": "operand",
-                  "source": "package"
+                  "kind": "operand_list",
+                  "source": "packages"
                 }
               ]
             },
@@ -7830,7 +7830,7 @@
               "root_mode": "required",
               "flow": [
                 {
-                  "kind": "literal",
+                  "kind": "subcommand",
                   "value": "update"
                 }
               ]
@@ -7840,7 +7840,7 @@
               "root_mode": "required",
               "flow": [
                 {
-                  "kind": "literal",
+                  "kind": "subcommand",
                   "value": "upgrade"
                 },
                 {
@@ -7854,7 +7854,7 @@
               "root_mode": "required",
               "flow": [
                 {
-                  "kind": "literal",
+                  "kind": "subcommand",
                   "value": "full-upgrade"
                 },
                 {
@@ -7865,10 +7865,10 @@
             },
             "search": {
               "command": "apt",
-              "root_mode": "required",
+              "root_mode": "not_required",
               "flow": [
                 {
-                  "kind": "literal",
+                  "kind": "subcommand",
                   "value": "search"
                 },
                 {
@@ -7879,10 +7879,10 @@
             },
             "info": {
               "command": "apt",
-              "root_mode": "required",
+              "root_mode": "not_required",
               "flow": [
                 {
-                  "kind": "literal",
+                  "kind": "subcommand",
                   "value": "show"
                 },
                 {
@@ -8385,7 +8385,7 @@
           "operations": {
             "probe": {
               "command": "apt",
-              "root_mode": "required",
+              "root_mode": "not_required",
               "flow": [
                 {
                   "kind": "flag",
@@ -8398,7 +8398,7 @@
               "root_mode": "required",
               "flow": [
                 {
-                  "kind": "literal",
+                  "kind": "subcommand",
                   "value": "install"
                 },
                 {
@@ -8406,8 +8406,8 @@
                   "value": "-y"
                 },
                 {
-                  "kind": "operand",
-                  "source": "package"
+                  "kind": "operand_list",
+                  "source": "packages"
                 }
               ]
             },
@@ -8416,7 +8416,7 @@
               "root_mode": "required",
               "flow": [
                 {
-                  "kind": "literal",
+                  "kind": "subcommand",
                   "value": "remove"
                 },
                 {
@@ -8424,8 +8424,8 @@
                   "value": "-y"
                 },
                 {
-                  "kind": "operand",
-                  "source": "package"
+                  "kind": "operand_list",
+                  "source": "packages"
                 }
               ]
             },
@@ -8434,7 +8434,7 @@
               "root_mode": "required",
               "flow": [
                 {
-                  "kind": "literal",
+                  "kind": "subcommand",
                   "value": "purge"
                 },
                 {
@@ -8442,8 +8442,8 @@
                   "value": "-y"
                 },
                 {
-                  "kind": "operand",
-                  "source": "package"
+                  "kind": "operand_list",
+                  "source": "packages"
                 }
               ]
             },
@@ -8452,7 +8452,7 @@
               "root_mode": "required",
               "flow": [
                 {
-                  "kind": "literal",
+                  "kind": "subcommand",
                   "value": "update"
                 }
               ]
@@ -8462,7 +8462,7 @@
               "root_mode": "required",
               "flow": [
                 {
-                  "kind": "literal",
+                  "kind": "subcommand",
                   "value": "upgrade"
                 },
                 {
@@ -8476,7 +8476,7 @@
               "root_mode": "required",
               "flow": [
                 {
-                  "kind": "literal",
+                  "kind": "subcommand",
                   "value": "full-upgrade"
                 },
                 {
@@ -8487,10 +8487,10 @@
             },
             "search": {
               "command": "apt",
-              "root_mode": "required",
+              "root_mode": "not_required",
               "flow": [
                 {
-                  "kind": "literal",
+                  "kind": "subcommand",
                   "value": "search"
                 },
                 {
@@ -8501,10 +8501,10 @@
             },
             "info": {
               "command": "apt",
-              "root_mode": "required",
+              "root_mode": "not_required",
               "flow": [
                 {
-                  "kind": "literal",
+                  "kind": "subcommand",
                   "value": "show"
                 },
                 {
@@ -9066,7 +9066,7 @@
           "operations": {
             "probe": {
               "command": "apt",
-              "root_mode": "required",
+              "root_mode": "not_required",
               "flow": [
                 {
                   "kind": "flag",
@@ -9079,7 +9079,7 @@
               "root_mode": "required",
               "flow": [
                 {
-                  "kind": "literal",
+                  "kind": "subcommand",
                   "value": "install"
                 },
                 {
@@ -9087,8 +9087,8 @@
                   "value": "-y"
                 },
                 {
-                  "kind": "operand",
-                  "source": "package"
+                  "kind": "operand_list",
+                  "source": "packages"
                 }
               ]
             },
@@ -9097,7 +9097,7 @@
               "root_mode": "required",
               "flow": [
                 {
-                  "kind": "literal",
+                  "kind": "subcommand",
                   "value": "remove"
                 },
                 {
@@ -9105,8 +9105,8 @@
                   "value": "-y"
                 },
                 {
-                  "kind": "operand",
-                  "source": "package"
+                  "kind": "operand_list",
+                  "source": "packages"
                 }
               ]
             },
@@ -9115,7 +9115,7 @@
               "root_mode": "required",
               "flow": [
                 {
-                  "kind": "literal",
+                  "kind": "subcommand",
                   "value": "purge"
                 },
                 {
@@ -9123,8 +9123,8 @@
                   "value": "-y"
                 },
                 {
-                  "kind": "operand",
-                  "source": "package"
+                  "kind": "operand_list",
+                  "source": "packages"
                 }
               ]
             },
@@ -9133,7 +9133,7 @@
               "root_mode": "required",
               "flow": [
                 {
-                  "kind": "literal",
+                  "kind": "subcommand",
                   "value": "update"
                 }
               ]
@@ -9143,7 +9143,7 @@
               "root_mode": "required",
               "flow": [
                 {
-                  "kind": "literal",
+                  "kind": "subcommand",
                   "value": "upgrade"
                 },
                 {
@@ -9157,7 +9157,7 @@
               "root_mode": "required",
               "flow": [
                 {
-                  "kind": "literal",
+                  "kind": "subcommand",
                   "value": "full-upgrade"
                 },
                 {
@@ -9168,10 +9168,10 @@
             },
             "search": {
               "command": "apt",
-              "root_mode": "required",
+              "root_mode": "not_required",
               "flow": [
                 {
-                  "kind": "literal",
+                  "kind": "subcommand",
                   "value": "search"
                 },
                 {
@@ -9182,10 +9182,10 @@
             },
             "info": {
               "command": "apt",
-              "root_mode": "required",
+              "root_mode": "not_required",
               "flow": [
                 {
-                  "kind": "literal",
+                  "kind": "subcommand",
                   "value": "show"
                 },
                 {
