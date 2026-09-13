@@ -27,7 +27,8 @@
     "Cada operación declara explícitamente sus variables requeridas y su tipo inferido desde flow.",
     "La normalización semántica nunca cambia el argv efectivo: sólo clasifica mejor cada pieza del flow.",
     "Todo probe puramente de versión/ayuda es no privilegiado.",
-    "El diccionario completo debe pasar validación estructural antes de publicarse."
+    "El diccionario completo debe pasar validación estructural antes de publicarse.",
+    "Los operadores de shell no se representan como argv ordinario: requieren una capacidad explícita del motor."
   ],
   "flow_contract": {
     "ordered": true,
@@ -28546,6 +28547,19 @@
       "query": 115,
       "ref": 204,
       "remote": 68
-    }
+    },
+    "operation_fields": {
+      "command": 1231,
+      "expect": 13,
+      "flow": 1231,
+      "root_mode": 1231,
+      "variables": 858
+    },
+    "flow_fields": {
+      "kind": 2778,
+      "source": 926,
+      "value": 1852
+    },
+    "literal_items": []
   }
 }
