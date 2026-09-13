@@ -391,7 +391,7 @@
               "root_mode": "not_required",
               "flow": [
                 {
-                  "kind": "literal",
+                  "kind": "subcommand",
                   "value": "search"
                 },
                 {
@@ -405,7 +405,7 @@
               "root_mode": "not_required",
               "flow": [
                 {
-                  "kind": "literal",
+                  "kind": "subcommand",
                   "value": "show"
                 },
                 {
@@ -419,7 +419,7 @@
               "root_mode": "not_required",
               "flow": [
                 {
-                  "kind": "literal",
+                  "kind": "subcommand",
                   "value": "policy"
                 },
                 {
@@ -433,7 +433,7 @@
               "root_mode": "not_required",
               "flow": [
                 {
-                  "kind": "literal",
+                  "kind": "subcommand",
                   "value": "depends"
                 },
                 {
@@ -447,7 +447,7 @@
               "root_mode": "not_required",
               "flow": [
                 {
-                  "kind": "literal",
+                  "kind": "subcommand",
                   "value": "rdepends"
                 },
                 {
@@ -456,7 +456,8 @@
                 }
               ]
             }
-          }
+          },
+          "command": "apt-cache"
         },
         "dpkg": {
           "class": "local_package_installer",
@@ -1300,7 +1301,7 @@
               "root_mode": "not_required",
               "flow": [
                 {
-                  "kind": "literal",
+                  "kind": "subcommand",
                   "value": "search"
                 },
                 {
@@ -1314,7 +1315,7 @@
               "root_mode": "not_required",
               "flow": [
                 {
-                  "kind": "literal",
+                  "kind": "subcommand",
                   "value": "show"
                 },
                 {
@@ -1328,7 +1329,7 @@
               "root_mode": "not_required",
               "flow": [
                 {
-                  "kind": "literal",
+                  "kind": "subcommand",
                   "value": "policy"
                 },
                 {
@@ -1342,7 +1343,7 @@
               "root_mode": "not_required",
               "flow": [
                 {
-                  "kind": "literal",
+                  "kind": "subcommand",
                   "value": "depends"
                 },
                 {
@@ -1356,7 +1357,7 @@
               "root_mode": "not_required",
               "flow": [
                 {
-                  "kind": "literal",
+                  "kind": "subcommand",
                   "value": "rdepends"
                 },
                 {
@@ -1365,7 +1366,8 @@
                 }
               ]
             }
-          }
+          },
+          "command": "apt-cache"
         },
         "dpkg": {
           "class": "local_package_installer",
@@ -2205,7 +2207,7 @@
               "root_mode": "not_required",
               "flow": [
                 {
-                  "kind": "literal",
+                  "kind": "subcommand",
                   "value": "search"
                 },
                 {
@@ -2219,7 +2221,7 @@
               "root_mode": "not_required",
               "flow": [
                 {
-                  "kind": "literal",
+                  "kind": "subcommand",
                   "value": "show"
                 },
                 {
@@ -2233,7 +2235,7 @@
               "root_mode": "not_required",
               "flow": [
                 {
-                  "kind": "literal",
+                  "kind": "subcommand",
                   "value": "policy"
                 },
                 {
@@ -2247,7 +2249,7 @@
               "root_mode": "not_required",
               "flow": [
                 {
-                  "kind": "literal",
+                  "kind": "subcommand",
                   "value": "depends"
                 },
                 {
@@ -2261,7 +2263,7 @@
               "root_mode": "not_required",
               "flow": [
                 {
-                  "kind": "literal",
+                  "kind": "subcommand",
                   "value": "rdepends"
                 },
                 {
@@ -2270,7 +2272,8 @@
                 }
               ]
             }
-          }
+          },
+          "command": "apt-cache"
         },
         "dpkg": {
           "class": "local_package_installer",
@@ -3009,7 +3012,7 @@
               "root_mode": "not_required",
               "flow": [
                 {
-                  "kind": "literal",
+                  "kind": "subcommand",
                   "value": "search"
                 },
                 {
@@ -3023,7 +3026,7 @@
               "root_mode": "not_required",
               "flow": [
                 {
-                  "kind": "literal",
+                  "kind": "subcommand",
                   "value": "show"
                 },
                 {
@@ -3037,7 +3040,7 @@
               "root_mode": "not_required",
               "flow": [
                 {
-                  "kind": "literal",
+                  "kind": "subcommand",
                   "value": "policy"
                 },
                 {
@@ -3051,7 +3054,7 @@
               "root_mode": "not_required",
               "flow": [
                 {
-                  "kind": "literal",
+                  "kind": "subcommand",
                   "value": "depends"
                 },
                 {
@@ -3065,7 +3068,7 @@
               "root_mode": "not_required",
               "flow": [
                 {
-                  "kind": "literal",
+                  "kind": "subcommand",
                   "value": "rdepends"
                 },
                 {
@@ -3074,7 +3077,8 @@
                 }
               ]
             }
-          }
+          },
+          "command": "apt-cache"
         },
         "dpkg": {
           "class": "local_package_installer",
@@ -3662,7 +3666,7 @@
               "root_mode": "not_required",
               "flow": [
                 {
-                  "kind": "literal",
+                  "kind": "subcommand",
                   "value": "search"
                 },
                 {
@@ -3676,7 +3680,7 @@
               "root_mode": "not_required",
               "flow": [
                 {
-                  "kind": "literal",
+                  "kind": "subcommand",
                   "value": "show"
                 },
                 {
@@ -3690,7 +3694,7 @@
               "root_mode": "not_required",
               "flow": [
                 {
-                  "kind": "literal",
+                  "kind": "subcommand",
                   "value": "policy"
                 },
                 {
@@ -3704,7 +3708,7 @@
               "root_mode": "not_required",
               "flow": [
                 {
-                  "kind": "literal",
+                  "kind": "subcommand",
                   "value": "depends"
                 },
                 {
@@ -3718,7 +3722,7 @@
               "root_mode": "not_required",
               "flow": [
                 {
-                  "kind": "literal",
+                  "kind": "subcommand",
                   "value": "rdepends"
                 },
                 {
@@ -3727,7 +3731,8 @@
                 }
               ]
             }
-          }
+          },
+          "command": "apt-cache"
         },
         "dpkg": {
           "class": "local_package_installer",
@@ -4315,7 +4320,7 @@
               "root_mode": "not_required",
               "flow": [
                 {
-                  "kind": "literal",
+                  "kind": "subcommand",
                   "value": "search"
                 },
                 {
@@ -4329,7 +4334,7 @@
               "root_mode": "not_required",
               "flow": [
                 {
-                  "kind": "literal",
+                  "kind": "subcommand",
                   "value": "show"
                 },
                 {
@@ -4343,7 +4348,7 @@
               "root_mode": "not_required",
               "flow": [
                 {
-                  "kind": "literal",
+                  "kind": "subcommand",
                   "value": "policy"
                 },
                 {
@@ -4357,7 +4362,7 @@
               "root_mode": "not_required",
               "flow": [
                 {
-                  "kind": "literal",
+                  "kind": "subcommand",
                   "value": "depends"
                 },
                 {
@@ -4371,7 +4376,7 @@
               "root_mode": "not_required",
               "flow": [
                 {
-                  "kind": "literal",
+                  "kind": "subcommand",
                   "value": "rdepends"
                 },
                 {
@@ -4380,7 +4385,8 @@
                 }
               ]
             }
-          }
+          },
+          "command": "apt-cache"
         },
         "dpkg": {
           "class": "local_package_installer",
@@ -5119,7 +5125,7 @@
               "root_mode": "not_required",
               "flow": [
                 {
-                  "kind": "literal",
+                  "kind": "subcommand",
                   "value": "search"
                 },
                 {
@@ -5133,7 +5139,7 @@
               "root_mode": "not_required",
               "flow": [
                 {
-                  "kind": "literal",
+                  "kind": "subcommand",
                   "value": "show"
                 },
                 {
@@ -5147,7 +5153,7 @@
               "root_mode": "not_required",
               "flow": [
                 {
-                  "kind": "literal",
+                  "kind": "subcommand",
                   "value": "policy"
                 },
                 {
@@ -5161,7 +5167,7 @@
               "root_mode": "not_required",
               "flow": [
                 {
-                  "kind": "literal",
+                  "kind": "subcommand",
                   "value": "depends"
                 },
                 {
@@ -5175,7 +5181,7 @@
               "root_mode": "not_required",
               "flow": [
                 {
-                  "kind": "literal",
+                  "kind": "subcommand",
                   "value": "rdepends"
                 },
                 {
@@ -5184,7 +5190,8 @@
                 }
               ]
             }
-          }
+          },
+          "command": "apt-cache"
         },
         "dpkg": {
           "class": "local_package_installer",
@@ -5800,7 +5807,7 @@
               "root_mode": "not_required",
               "flow": [
                 {
-                  "kind": "literal",
+                  "kind": "subcommand",
                   "value": "search"
                 },
                 {
@@ -5814,7 +5821,7 @@
               "root_mode": "not_required",
               "flow": [
                 {
-                  "kind": "literal",
+                  "kind": "subcommand",
                   "value": "show"
                 },
                 {
@@ -5828,7 +5835,7 @@
               "root_mode": "not_required",
               "flow": [
                 {
-                  "kind": "literal",
+                  "kind": "subcommand",
                   "value": "policy"
                 },
                 {
@@ -5842,7 +5849,7 @@
               "root_mode": "not_required",
               "flow": [
                 {
-                  "kind": "literal",
+                  "kind": "subcommand",
                   "value": "depends"
                 },
                 {
@@ -5856,7 +5863,7 @@
               "root_mode": "not_required",
               "flow": [
                 {
-                  "kind": "literal",
+                  "kind": "subcommand",
                   "value": "rdepends"
                 },
                 {
@@ -5865,7 +5872,8 @@
                 }
               ]
             }
-          }
+          },
+          "command": "apt-cache"
         },
         "dpkg": {
           "class": "local_package_installer",
@@ -6582,7 +6590,7 @@
               "root_mode": "not_required",
               "flow": [
                 {
-                  "kind": "literal",
+                  "kind": "subcommand",
                   "value": "search"
                 },
                 {
@@ -6596,7 +6604,7 @@
               "root_mode": "not_required",
               "flow": [
                 {
-                  "kind": "literal",
+                  "kind": "subcommand",
                   "value": "show"
                 },
                 {
@@ -6610,7 +6618,7 @@
               "root_mode": "not_required",
               "flow": [
                 {
-                  "kind": "literal",
+                  "kind": "subcommand",
                   "value": "policy"
                 },
                 {
@@ -6624,7 +6632,7 @@
               "root_mode": "not_required",
               "flow": [
                 {
-                  "kind": "literal",
+                  "kind": "subcommand",
                   "value": "depends"
                 },
                 {
@@ -6638,7 +6646,7 @@
               "root_mode": "not_required",
               "flow": [
                 {
-                  "kind": "literal",
+                  "kind": "subcommand",
                   "value": "rdepends"
                 },
                 {
@@ -6647,7 +6655,8 @@
                 }
               ]
             }
-          }
+          },
+          "command": "apt-cache"
         },
         "dpkg": {
           "class": "local_package_installer",
@@ -7386,7 +7395,7 @@
               "root_mode": "not_required",
               "flow": [
                 {
-                  "kind": "literal",
+                  "kind": "subcommand",
                   "value": "search"
                 },
                 {
@@ -7400,7 +7409,7 @@
               "root_mode": "not_required",
               "flow": [
                 {
-                  "kind": "literal",
+                  "kind": "subcommand",
                   "value": "show"
                 },
                 {
@@ -7414,7 +7423,7 @@
               "root_mode": "not_required",
               "flow": [
                 {
-                  "kind": "literal",
+                  "kind": "subcommand",
                   "value": "policy"
                 },
                 {
@@ -7428,7 +7437,7 @@
               "root_mode": "not_required",
               "flow": [
                 {
-                  "kind": "literal",
+                  "kind": "subcommand",
                   "value": "depends"
                 },
                 {
@@ -7442,7 +7451,7 @@
               "root_mode": "not_required",
               "flow": [
                 {
-                  "kind": "literal",
+                  "kind": "subcommand",
                   "value": "rdepends"
                 },
                 {
@@ -7451,7 +7460,8 @@
                 }
               ]
             }
-          }
+          },
+          "command": "apt-cache"
         },
         "dpkg": {
           "class": "local_package_installer",
@@ -8039,7 +8049,7 @@
               "root_mode": "not_required",
               "flow": [
                 {
-                  "kind": "literal",
+                  "kind": "subcommand",
                   "value": "search"
                 },
                 {
@@ -8053,7 +8063,7 @@
               "root_mode": "not_required",
               "flow": [
                 {
-                  "kind": "literal",
+                  "kind": "subcommand",
                   "value": "show"
                 },
                 {
@@ -8067,7 +8077,7 @@
               "root_mode": "not_required",
               "flow": [
                 {
-                  "kind": "literal",
+                  "kind": "subcommand",
                   "value": "policy"
                 },
                 {
@@ -8081,7 +8091,7 @@
               "root_mode": "not_required",
               "flow": [
                 {
-                  "kind": "literal",
+                  "kind": "subcommand",
                   "value": "depends"
                 },
                 {
@@ -8095,7 +8105,7 @@
               "root_mode": "not_required",
               "flow": [
                 {
-                  "kind": "literal",
+                  "kind": "subcommand",
                   "value": "rdepends"
                 },
                 {
@@ -8104,7 +8114,8 @@
                 }
               ]
             }
-          }
+          },
+          "command": "apt-cache"
         },
         "dpkg": {
           "class": "local_package_installer",
@@ -8661,7 +8672,7 @@
               "root_mode": "not_required",
               "flow": [
                 {
-                  "kind": "literal",
+                  "kind": "subcommand",
                   "value": "search"
                 },
                 {
@@ -8675,7 +8686,7 @@
               "root_mode": "not_required",
               "flow": [
                 {
-                  "kind": "literal",
+                  "kind": "subcommand",
                   "value": "show"
                 },
                 {
@@ -8689,7 +8700,7 @@
               "root_mode": "not_required",
               "flow": [
                 {
-                  "kind": "literal",
+                  "kind": "subcommand",
                   "value": "policy"
                 },
                 {
@@ -8703,7 +8714,7 @@
               "root_mode": "not_required",
               "flow": [
                 {
-                  "kind": "literal",
+                  "kind": "subcommand",
                   "value": "depends"
                 },
                 {
@@ -8717,7 +8728,7 @@
               "root_mode": "not_required",
               "flow": [
                 {
-                  "kind": "literal",
+                  "kind": "subcommand",
                   "value": "rdepends"
                 },
                 {
@@ -8726,7 +8737,8 @@
                 }
               ]
             }
-          }
+          },
+          "command": "apt-cache"
         },
         "dpkg": {
           "class": "local_package_installer",
@@ -9342,7 +9354,7 @@
               "root_mode": "not_required",
               "flow": [
                 {
-                  "kind": "literal",
+                  "kind": "subcommand",
                   "value": "search"
                 },
                 {
@@ -9356,7 +9368,7 @@
               "root_mode": "not_required",
               "flow": [
                 {
-                  "kind": "literal",
+                  "kind": "subcommand",
                   "value": "show"
                 },
                 {
@@ -9370,7 +9382,7 @@
               "root_mode": "not_required",
               "flow": [
                 {
-                  "kind": "literal",
+                  "kind": "subcommand",
                   "value": "policy"
                 },
                 {
@@ -9384,7 +9396,7 @@
               "root_mode": "not_required",
               "flow": [
                 {
-                  "kind": "literal",
+                  "kind": "subcommand",
                   "value": "depends"
                 },
                 {
@@ -9398,7 +9410,7 @@
               "root_mode": "not_required",
               "flow": [
                 {
-                  "kind": "literal",
+                  "kind": "subcommand",
                   "value": "rdepends"
                 },
                 {
@@ -9407,7 +9419,8 @@
                 }
               ]
             }
-          }
+          },
+          "command": "apt-cache"
         },
         "dpkg": {
           "class": "local_package_installer",
