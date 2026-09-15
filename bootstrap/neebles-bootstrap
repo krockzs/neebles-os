@@ -3,15 +3,12 @@
 set -u
 
 MODE="${1:---interactive}"
-BOSS_MANIFEST_URL="https://raw.githubusercontent.com/krockzs/neebles-boss/main/release/manifest.json"
+
+BOSS_BOOTSTRAP_URL="https://github.com/krockzs/neebles-boss/releases/latest/download/bootstrap.json"
 NEEBLES_BIN="/opt/neebles/client/bin/neebles"
 
 case "$MODE" in
-    --interactive)
-        LAUNCH_MODE="interactive"
-        ;;
-    --headless)
-        LAUNCH_MODE="headless"
+    --interactive|--headless)
         ;;
     *)
         exit 1
@@ -19,9 +16,9 @@ case "$MODE" in
 esac
 
 TMPDIR="$(mktemp -d)"
-MANIFEST="$TMPDIR/boss-manifest.json"
+BOOTSTRAP="$TMPDIR/bootstrap.json"
 PLAN="$TMPDIR/assets.tsv"
-LAUNCH="$TMPDIR/launch.txt"
+INFO="$TMPDIR/stable.txt"
 
 cleanup() {
     rm -rf "$TMPDIR"
@@ -45,33 +42,37 @@ curl -LfsS \
     --proto '=https' \
     --tlsv1.2 \
     --connect-timeout 4 \
-    --max-time 12 \
-    "${BOSS_MANIFEST_URL}?nocache=$(date +%s)" \
-    -o "$MANIFEST" \
-    || fail "No fue posible obtener el manifest de Boss."
+    --max-time 20 \
+    "$BOSS_BOOTSTRAP_URL" \
+    -o "$BOOTSTRAP" \
+    || fail "No fue posible obtener bootstrap.json de Boss."
 
-python3 - "$MANIFEST" "$PLAN" "$LAUNCH" "$LAUNCH_MODE" <<'PY' \
-    || fail "Manifest de Boss inválido."
+python3 - "$BOOTSTRAP" "$PLAN" "$INFO" <<'PY' \
+    || fail "Bootstrap Schema 2 de Boss inválido."
 
 import json
 import re
 import sys
 
-manifest_path, plan_path, launch_path, launch_mode = sys.argv[1:]
+bootstrap_path, plan_path, info_path = sys.argv[1:]
 
-with open(manifest_path, encoding="utf-8") as f:
+with open(bootstrap_path, encoding="utf-8") as f:
     data = json.load(f)
 
-if data.get("schema") != 1:
+if data.get("schema") != 2:
     raise SystemExit(1)
 
 if data.get("channel") != "stable":
     raise SystemExit(1)
 
-version = data.get("version")
-base_url = data.get("base_url")
-assets = data.get("assets")
-launch = data.get("launch")
+stable = data.get("stable")
+
+if not isinstance(stable, dict):
+    raise SystemExit(1)
+
+version = stable.get("version")
+base_url = stable.get("base_url")
+assets = stable.get("assets")
 
 if not isinstance(version, str) or not re.fullmatch(r"\d+\.\d+\.\d+", version):
     raise SystemExit(1)
@@ -79,24 +80,31 @@ if not isinstance(version, str) or not re.fullmatch(r"\d+\.\d+\.\d+", version):
 if not isinstance(base_url, str) or not base_url.startswith("https://"):
     raise SystemExit(1)
 
-if not isinstance(assets, dict) or not assets:
+if not isinstance(assets, dict):
     raise SystemExit(1)
 
-if not isinstance(launch, dict):
+required = (
+    "backend",
+    "ui",
+    "installer",
+    "auth_agent",
+    "client_data",
+    "install",
+)
+
+if set(assets) != set(required):
     raise SystemExit(1)
 
 validated = {}
 
-for asset_id, asset in assets.items():
-    if not isinstance(asset_id, str) or not re.fullmatch(r"[A-Za-z0-9_-]+", asset_id):
-        raise SystemExit(1)
+for asset_id in required:
+    asset = assets.get(asset_id)
 
     if not isinstance(asset, dict):
         raise SystemExit(1)
 
     filename = asset.get("file")
     sha256 = asset.get("sha256")
-    executable = asset.get("executable")
 
     if not isinstance(filename, str) or not filename:
         raise SystemExit(1)
@@ -107,59 +115,32 @@ for asset_id, asset in assets.items():
     if not isinstance(sha256, str) or not re.fullmatch(r"[0-9a-fA-F]{64}", sha256):
         raise SystemExit(1)
 
-    if not isinstance(executable, bool):
-        raise SystemExit(1)
+    validated[asset_id] = (
+        filename,
+        sha256.lower(),
+    )
 
-    validated[asset_id] = {
-        "file": filename,
-        "sha256": sha256.lower(),
-        "executable": executable
-    }
-
-mode = launch.get(launch_mode)
-
-if not isinstance(mode, dict):
-    raise SystemExit(1)
-
-entrypoint = mode.get("entrypoint")
-args = mode.get("args")
-
-if entrypoint not in validated:
-    raise SystemExit(1)
-
-if not isinstance(args, list):
-    raise SystemExit(1)
-
-for asset_id in args:
-    if asset_id not in validated:
-        raise SystemExit(1)
-
-with open(plan_path, "w", encoding="utf-8") as f:
-    for asset_id, asset in validated.items():
-        f.write(
-            f"{asset_id}\t"
-            f"{asset['file']}\t"
-            f"{asset['sha256']}\t"
-            f"{1 if asset['executable'] else 0}\n"
-        )
-
-with open(launch_path, "w", encoding="utf-8") as f:
+with open(info_path, "w", encoding="utf-8") as f:
     f.write(version + "\n")
     f.write(base_url + "\n")
-    f.write(entrypoint + "\n")
 
-    for asset_id in args:
-        f.write(asset_id + "\n")
+with open(plan_path, "w", encoding="utf-8") as f:
+    for asset_id in required:
+        filename, sha256 = validated[asset_id]
+        f.write(
+            f"{asset_id}\t"
+            f"{filename}\t"
+            f"{sha256}\n"
+        )
 PY
 
-mapfile -t LAUNCH_DATA < "$LAUNCH"
+mapfile -t INFO_DATA < "$INFO"
 
-[ "${#LAUNCH_DATA[@]}" -ge 3 ] \
-    || fail "Contrato de lanzamiento incompleto."
+[ "${#INFO_DATA[@]}" -eq 2 ] \
+    || fail "Contrato estable de Boss incompleto."
 
-STABLE_VERSION="${LAUNCH_DATA[0]}"
-BASE_URL="${LAUNCH_DATA[1]}"
-ENTRYPOINT_ID="${LAUNCH_DATA[2]}"
+STABLE_VERSION="${INFO_DATA[0]}"
+BASE_URL="${INFO_DATA[1]}"
 
 version_lt() {
     [ "$1" != "$2" ] && \
@@ -186,7 +167,7 @@ fi
 
 declare -A ASSET_PATHS
 
-while IFS=$'\t' read -r asset_id filename expected_sha executable; do
+while IFS=$'\t' read -r asset_id filename expected_sha; do
     destination="$TMPDIR/$filename"
 
     echo "[N.E.E.B.L.E.S.] Descargando ${filename}..."
@@ -205,36 +186,39 @@ while IFS=$'\t' read -r asset_id filename expected_sha executable; do
     [ "$actual_sha" = "$expected_sha" ] \
         || fail "La verificación SHA-256 falló para ${filename}."
 
-    if [ "$executable" = "1" ]; then
-        chmod 700 "$destination" \
-            || fail "No fue posible preparar ${filename}."
-    fi
-
     ASSET_PATHS["$asset_id"]="$destination"
-
 done < "$PLAN"
 
-ENTRYPOINT="${ASSET_PATHS[$ENTRYPOINT_ID]:-}"
-
-[ -n "$ENTRYPOINT" ] \
-    || fail "No fue posible resolver el entrypoint."
-
-ARGS=()
-
-for ((i=3; i<${#LAUNCH_DATA[@]}; i++)); do
-    asset_id="${LAUNCH_DATA[$i]}"
-    asset_path="${ASSET_PATHS[$asset_id]:-}"
-
-    [ -n "$asset_path" ] \
-        || fail "No fue posible resolver el asset ${asset_id}."
-
-    ARGS+=("$asset_path")
+for executable_id in backend ui installer auth_agent install; do
+    chmod 700 "${ASSET_PATHS[$executable_id]}" \
+        || fail "No fue posible preparar ${executable_id}."
 done
+
+BACKEND="${ASSET_PATHS[backend]}"
+UI="${ASSET_PATHS[ui]}"
+INSTALLER="${ASSET_PATHS[installer]}"
+AUTH_AGENT="${ASSET_PATHS[auth_agent]}"
+CLIENT_DATA="${ASSET_PATHS[client_data]}"
+INSTALL="${ASSET_PATHS[install]}"
 
 echo "[N.E.E.B.L.E.S.] Ejecutando Boss ${STABLE_VERSION}..."
 
-"$ENTRYPOINT" "${ARGS[@]}" \
-    || fail "La instalación o actualización de Boss falló."
+if [ "$MODE" = "--interactive" ]; then
+    NEEBLES_AUTH_AGENT="$AUTH_AGENT" \
+        "$INSTALLER" \
+        "$INSTALL" \
+        "$BACKEND" \
+        "$UI" \
+        "$CLIENT_DATA" \
+        || fail "La instalación o actualización de Boss falló."
+else
+    "$INSTALL" \
+        "$BACKEND" \
+        "$UI" \
+        "$CLIENT_DATA" \
+        "$AUTH_AGENT" \
+        || fail "La instalación o actualización de Boss falló."
+fi
 
 [ -x "$NEEBLES_BIN" ] \
     || fail "Boss no quedó instalado correctamente."
