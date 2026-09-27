@@ -90,6 +90,8 @@ required = (
     "auth_agent",
     "client_data",
     "install",
+    "runtime_resolver",
+    "runtime_archive",
 )
 
 if set(assets) != set(required):
@@ -189,7 +191,7 @@ while IFS=$'\t' read -r asset_id filename expected_sha; do
     ASSET_PATHS["$asset_id"]="$destination"
 done < "$PLAN"
 
-for executable_id in backend ui installer auth_agent install; do
+for executable_id in backend ui installer auth_agent install runtime_resolver; do
     chmod 700 "${ASSET_PATHS[$executable_id]}" \
         || fail "No fue posible preparar ${executable_id}."
 done
@@ -200,6 +202,87 @@ INSTALLER="${ASSET_PATHS[installer]}"
 AUTH_AGENT="${ASSET_PATHS[auth_agent]}"
 CLIENT_DATA="${ASSET_PATHS[client_data]}"
 INSTALL="${ASSET_PATHS[install]}"
+RUNTIME_RESOLVER="${ASSET_PATHS[runtime_resolver]}"
+RUNTIME_ARCHIVE="${ASSET_PATHS[runtime_archive]}"
+
+RUNTIME_DIR="$TMPDIR/runtime-authority"
+RUNTIME_MANIFEST="$RUNTIME_DIR/domestic-runtime.json"
+AUTHORITY_SUPPLY="/usr/lib/neebles/platform/authority/authority-supply.json"
+
+python3 - \
+    "$RUNTIME_ARCHIVE" \
+    "$RUNTIME_DIR" \
+    <<'PY_RUNTIME' \
+    || fail "No fue posible materializar la autoridad doméstica bootstrap."
+
+from pathlib import Path, PurePosixPath
+import sys
+import tarfile
+
+archive_path = Path(sys.argv[1])
+destination = Path(sys.argv[2])
+
+destination.mkdir(
+    parents=True,
+    exist_ok=False,
+)
+
+with tarfile.open(
+    archive_path,
+    mode="r:gz",
+) as archive:
+    members = archive.getmembers()
+
+    if not members:
+        raise SystemExit(1)
+
+    names = {
+        member.name
+        for member in members
+    }
+
+    if "domestic-runtime.json" not in names:
+        raise SystemExit(1)
+
+    if not any(
+        name == "rootfs"
+        or name.startswith("rootfs/")
+        for name in names
+    ):
+        raise SystemExit(1)
+
+    for member in members:
+        pure = PurePosixPath(
+            member.name
+        )
+
+        if pure.is_absolute():
+            raise SystemExit(1)
+
+        if ".." in pure.parts:
+            raise SystemExit(1)
+
+        if not (
+            member.isdir()
+            or member.isfile()
+            or member.issym()
+        ):
+            raise SystemExit(1)
+
+    archive.extractall(
+        destination,
+        members=members,
+        filter="data",
+    )
+
+PY_RUNTIME
+
+[ -f "$RUNTIME_MANIFEST" ] \
+    || fail "La autoridad doméstica bootstrap no contiene domestic-runtime.json."
+
+[ -f "$AUTHORITY_SUPPLY" ] \
+    && [ -r "$AUTHORITY_SUPPLY" ] \
+    || fail "NEEBLES OS no suministró AuthoritySupply."
 
 echo "[N.E.E.B.L.E.S.] Ejecutando Boss ${STABLE_VERSION}..."
 
@@ -210,6 +293,9 @@ if [ "$MODE" = "--interactive" ]; then
         "$BACKEND" \
         "$UI" \
         "$CLIENT_DATA" \
+        "$RUNTIME_RESOLVER" \
+        "$RUNTIME_MANIFEST" \
+        "$AUTHORITY_SUPPLY" \
         || fail "La instalación o actualización de Boss falló."
 else
     "$INSTALL" \
@@ -217,6 +303,7 @@ else
         "$UI" \
         "$CLIENT_DATA" \
         "$AUTH_AGENT" \
+        "$AUTHORITY_SUPPLY" \
         || fail "La instalación o actualización de Boss falló."
 fi
 
