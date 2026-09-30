@@ -1,5 +1,7 @@
 # N.E.E.B.L.E.S. OS
 
+**Current integration status: Point 8 GREEN / CLOSED. Boss contract CLOSED.**
+
 N.E.E.B.L.E.S. OS contains the operating-system-side configuration, bootstrap resources and canonical platform authority definitions of the N.E.E.B.L.E.S. ecosystem.
 
 The OS is based on Debian and KDE Plasma.
@@ -51,9 +53,11 @@ platform/bin/
 
 These definitions are materialized into N.E.E.B.L.E.S. BUILD for image construction.
 
-## Point 7 integration
+## Point 7 / Point 8 continuity
 
 Point 7 introduced the OS-side authority required by generic domestic construction without teaching the OS module technology.
+
+Point 8 globally recertified the Boss contract without requiring source changes in N.E.E.B.L.E.S. OS. The platform-authority model established before Point 8 remains the canonical OS contract.
 
 The ownership law is:
 
@@ -75,6 +79,10 @@ The OS does not discover host capabilities for Boss and does not derive permissi
 
 Stage 8 host independence remains permanent.
 
+Point 8 did not add a new OS authority or provider. `platform.desktop_session_interface`, `platform.filesystem_boundary`, `neebles.domestic_workspace` and the rest of the canonical AuthoritySupply remain owned by OS and consumed by Boss through explicit authenticated grants.
+
+The final Point 8 gate is a pre-VM Boss closure. Full installed-system acceptance in a virtual machine remains a later phase and does not change OS ownership by itself.
+
 ## Ownership rule
 
 OS describes platform authority.
@@ -86,3 +94,16 @@ Boss consumes it.
 CUSTOM supplies certified domestic runtime and construction material.
 
 Lifecycle does not own domestic construction or Esbirro certification.
+
+
+## Current handoff
+
+```text
+POINT 7 CUSTOM V2            GREEN / CLOSED
+POINT 8 BOSS FINAL GATE      GREEN / CLOSED
+BOSS CONTRACT                CLOSED
+OS SOURCE CHANGE IN POINT 8  NONE REQUIRED
+TEST MODULE                  NEXT: POINT 9 ADAPTATION
+```
+
+With the Boss contract closed, Test Module may be adapted when Point 9 begins. Test Module remains a consumer of the closed Boss/OS authority contract and does not define platform authority semantics.
