@@ -22,6 +22,7 @@ Current authority families include:
 
 ```text
 platform.filesystem_boundary
+platform.desktop_session_interface
 system.dns_resolver_config
 boss.modules.install_staging
 boss.modules.update_staging
