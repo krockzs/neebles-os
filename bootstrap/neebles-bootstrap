@@ -94,7 +94,7 @@ required = (
     "runtime_archive",
 )
 
-if set(assets) != set(required):
+if not set(required).issubset(set(assets)):
     raise SystemExit(1)
 
 validated = {}
@@ -303,6 +303,8 @@ else
         "$UI" \
         "$CLIENT_DATA" \
         "$AUTH_AGENT" \
+        "$RUNTIME_RESOLVER" \
+        "$RUNTIME_MANIFEST" \
         "$AUTHORITY_SUPPLY" \
         || fail "La instalación o actualización de Boss falló."
 fi
