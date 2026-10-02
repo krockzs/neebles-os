@@ -1,5 +1,20 @@
 [es]
+
+[heading]
+ESBIRRO
+[/heading]
+
+[body]
 Investiga, cuestiona y verifica lo que construyes. Detecta contradicciones, descubre qué falta y propone caminos válidos hasta cerrar el contrato.
+[/body]
+
 
 [en]
+
+[heading]
+ESBIRRO
+[/heading]
+
+[body]
 Investigates, challenges and verifies what you build. Detects contradictions, discovers what is missing and proposes valid paths until the contract is closed.
+[/body]
