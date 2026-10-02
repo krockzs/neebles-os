@@ -1,4 +1,4 @@
-[es]
+[es_CL]
 
 [heading]
 ESBIRRO
@@ -9,7 +9,7 @@ Investiga, cuestiona y verifica lo que construyes. Detecta contradicciones, desc
 [/body]
 
 
-[en]
+[en_US]
 
 [heading]
 ESBIRRO
