@@ -288,7 +288,10 @@ echo "[N.E.E.B.L.E.S.] Ejecutando Boss ${STABLE_VERSION}..."
 
 if [ "$MODE" = "--interactive" ]; then
     NEEBLES_AUTH_AGENT="$AUTH_AGENT" \
-        "$INSTALLER" \
+        "$RUNTIME_RESOLVER" \
+        --manifest "$RUNTIME_MANIFEST" \
+        --execute-external "$INSTALLER" \
+        -- \
         "$INSTALL" \
         "$BACKEND" \
         "$UI" \

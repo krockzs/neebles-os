@@ -3,6 +3,6 @@
   "channel": "stable",
   "version": "1.0.2",
   "file": "neebles-bootstrap",
-  "sha256": "7e00f1e6081092e55f27543037c03b162b99c2a51d3aedbd3394b91eaaf96fc4",
+  "sha256": "9e3e717bbad3c28fec6e68639b508cf610a5cf1e843a8880d98a4886beaff143",
   "url": "https://raw.githubusercontent.com/krockzs/neebles-os/main/bootstrap/neebles-bootstrap"
 }
