@@ -6,6 +6,12 @@ MODE="${1:---interactive}"
 
 BOSS_BOOTSTRAP_URL="https://github.com/krockzs/neebles-boss/releases/latest/download/bootstrap.json"
 NEEBLES_BIN="/opt/neebles/client/bin/neebles"
+MATERIALIZER="/usr/lib/neebles/bootstrap/neebles-bootstrap-materializer"
+
+TMPDIR="$(mktemp -d)"
+BOOTSTRAP="$TMPDIR/bootstrap.json"
+INFO="$TMPDIR/stable.txt"
+BOOTSTRAP_SESSION=""
 
 case "$MODE" in
     --interactive|--headless)
@@ -14,17 +20,6 @@ case "$MODE" in
         exit 1
         ;;
 esac
-
-TMPDIR="$(mktemp -d)"
-BOOTSTRAP="$TMPDIR/bootstrap.json"
-PLAN="$TMPDIR/assets.tsv"
-INFO="$TMPDIR/stable.txt"
-
-cleanup() {
-    rm -rf "$TMPDIR"
-}
-
-trap cleanup EXIT
 
 fail() {
     echo "[N.E.E.B.L.E.S.] $1" >&2
@@ -36,25 +31,28 @@ fail() {
     exit 1
 }
 
+cleanup() {
+    rm -rf "$TMPDIR"
+
+    if [ -n "$BOOTSTRAP_SESSION" ] && [ -x "$MATERIALIZER" ]; then
+        /usr/bin/pkexec "$MATERIALIZER" cleanup --session "$BOOTSTRAP_SESSION" || true
+        BOOTSTRAP_SESSION=""
+    fi
+}
+
+trap cleanup EXIT
+
 echo "[N.E.E.B.L.E.S.] Consultando N.E.E.B.L.E.S. Boss..."
 
-curl -LfsS \
-    --proto '=https' \
-    --tlsv1.2 \
-    --connect-timeout 4 \
-    --max-time 20 \
-    "$BOSS_BOOTSTRAP_URL" \
-    -o "$BOOTSTRAP" \
-    || fail "No fue posible obtener bootstrap.json de Boss."
+curl -LfsS     --proto '=https'     --tlsv1.2     --connect-timeout 4     --max-time 20     "$BOSS_BOOTSTRAP_URL"     -o "$BOOTSTRAP"     || fail "No fue posible obtener bootstrap.json de Boss."
 
-python3 - "$BOOTSTRAP" "$PLAN" "$INFO" <<'PY' \
-    || fail "Bootstrap Schema 2 de Boss inválido."
+python3 - "$BOOTSTRAP" "$INFO" <<'PY'     || fail "Bootstrap Schema 2 de Boss inválido."
 
 import json
 import re
 import sys
 
-bootstrap_path, plan_path, info_path = sys.argv[1:]
+bootstrap_path, info_path = sys.argv[1:]
 
 with open(bootstrap_path, encoding="utf-8") as f:
     data = json.load(f)
@@ -71,87 +69,24 @@ if not isinstance(stable, dict):
     raise SystemExit(1)
 
 version = stable.get("version")
-base_url = stable.get("base_url")
-assets = stable.get("assets")
 
 if not isinstance(version, str) or not re.fullmatch(r"\d+\.\d+\.\d+", version):
     raise SystemExit(1)
 
-if not isinstance(base_url, str) or not base_url.startswith("https://"):
-    raise SystemExit(1)
-
-if not isinstance(assets, dict):
-    raise SystemExit(1)
-
-required = (
-    "backend",
-    "ui",
-    "installer",
-    "auth_agent",
-    "client_data",
-    "install",
-    "runtime_resolver",
-    "runtime_archive",
-)
-
-if not set(required).issubset(set(assets)):
-    raise SystemExit(1)
-
-validated = {}
-
-for asset_id in required:
-    asset = assets.get(asset_id)
-
-    if not isinstance(asset, dict):
-        raise SystemExit(1)
-
-    filename = asset.get("file")
-    sha256 = asset.get("sha256")
-
-    if not isinstance(filename, str) or not filename:
-        raise SystemExit(1)
-
-    if "/" in filename or "\\" in filename:
-        raise SystemExit(1)
-
-    if not isinstance(sha256, str) or not re.fullmatch(r"[0-9a-fA-F]{64}", sha256):
-        raise SystemExit(1)
-
-    validated[asset_id] = (
-        filename,
-        sha256.lower(),
-    )
-
 with open(info_path, "w", encoding="utf-8") as f:
     f.write(version + "\n")
-    f.write(base_url + "\n")
-
-with open(plan_path, "w", encoding="utf-8") as f:
-    for asset_id in required:
-        filename, sha256 = validated[asset_id]
-        f.write(
-            f"{asset_id}\t"
-            f"{filename}\t"
-            f"{sha256}\n"
-        )
 PY
 
-mapfile -t INFO_DATA < "$INFO"
+STABLE_VERSION="$(sed -n '1p' "$INFO")"
 
-[ "${#INFO_DATA[@]}" -eq 2 ] \
-    || fail "Contrato estable de Boss incompleto."
-
-STABLE_VERSION="${INFO_DATA[0]}"
-BASE_URL="${INFO_DATA[1]}"
+[ -n "$STABLE_VERSION" ]     || fail "Contrato estable de Boss incompleto."
 
 version_lt() {
-    [ "$1" != "$2" ] && \
-    [ "$(printf '%s\n%s\n' "$1" "$2" | sort -V | head -n1)" = "$1" ]
+    [ "$1" != "$2" ] &&     [ "$(printf '%s\n%s\n' "$1" "$2" | sort -V | head -n1)" = "$1" ]
 }
 
 if [ -x "$NEEBLES_BIN" ]; then
-    LOCAL_VERSION="$("$NEEBLES_BIN" --version 2>/dev/null | awk '{print $NF}')" \
-        || fail "No fue posible determinar la versión local de Boss."
+    LOCAL_VERSION="$("$NEEBLES_BIN" --version 2>/dev/null | awk '{print $NF}')"         || fail "No fue posible determinar la versión local de Boss."
 
     if ! [[ "$LOCAL_VERSION" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
         fail "La versión local de Boss es inválida: ${LOCAL_VERSION}"
@@ -167,34 +102,102 @@ else
     echo "[N.E.E.B.L.E.S.] Boss no instalado. Preparando ${STABLE_VERSION}..."
 fi
 
+[ -x "$MATERIALIZER" ]     || fail "N.E.E.B.L.E.S. OS no materializó el helper bootstrap."
+
+[ -x /usr/bin/pkexec ]     || fail "N.E.E.B.L.E.S. OS no dispone de su frontera de autorización bootstrap."
+
+echo "[N.E.E.B.L.E.S.] Solicitando autorización para materializar Boss ${STABLE_VERSION}..."
+
+MATERIALIZED="$(
+    /usr/bin/pkexec         "$MATERIALIZER"         materialize         --expected-version "$STABLE_VERSION"
+)" || fail "No fue posible materializar el staging bootstrap privilegiado."
+
+IFS=$'\t' read -r MATERIALIZED_VERSION BOOTSTRAP_SESSION <<< "$MATERIALIZED"
+
+[ "$MATERIALIZED_VERSION" = "$STABLE_VERSION" ]     || fail "La versión materializada de Boss no coincide con la release estable."
+
+case "$BOOTSTRAP_SESSION" in
+    /opt/neebles-bootstrap/session-*)
+        ;;
+    *)
+        BOOTSTRAP_SESSION=""
+        fail "El helper devolvió un staging bootstrap inválido."
+        ;;
+esac
+
+SESSION_BOOTSTRAP="$BOOTSTRAP_SESSION/bootstrap.json"
+SESSION_INFO="$TMPDIR/session-assets.txt"
+
+python3 - "$SESSION_BOOTSTRAP" "$SESSION_INFO" <<'PY'     || fail "El staging privilegiado contiene un contrato Boss inválido."
+
+import json
+import re
+import sys
+from pathlib import Path
+
+bootstrap_path, info_path = sys.argv[1:]
+
+with open(bootstrap_path, encoding="utf-8") as f:
+    data = json.load(f)
+
+if data.get("schema") != 2 or data.get("channel") != "stable":
+    raise SystemExit(1)
+
+stable = data.get("stable")
+if not isinstance(stable, dict):
+    raise SystemExit(1)
+
+version = stable.get("version")
+assets = stable.get("assets")
+
+if not isinstance(version, str) or not re.fullmatch(r"\d+\.\d+\.\d+", version):
+    raise SystemExit(1)
+
+if not isinstance(assets, dict):
+    raise SystemExit(1)
+
+required = (
+    "backend",
+    "ui",
+    "installer",
+    "auth_agent",
+    "client_data",
+    "install",
+    "runtime_resolver",
+)
+
+validated = []
+
+for asset_id in required:
+    asset = assets.get(asset_id)
+
+    if not isinstance(asset, dict):
+        raise SystemExit(1)
+
+    filename = asset.get("file")
+
+    if not isinstance(filename, str) or not filename or Path(filename).name != filename:
+        raise SystemExit(1)
+
+    validated.append((asset_id, filename))
+
+with open(info_path, "w", encoding="utf-8") as f:
+    f.write(version + "\n")
+
+    for asset_id, filename in validated:
+        f.write(asset_id + "\t" + filename + "\n")
+PY
+
+SESSION_VERSION="$(sed -n '1p' "$SESSION_INFO")"
+
+[ "$SESSION_VERSION" = "$STABLE_VERSION" ]     || fail "El contrato materializado cambió de versión."
+
 declare -A ASSET_PATHS
 
-while IFS=$'\t' read -r asset_id filename expected_sha; do
-    destination="$TMPDIR/$filename"
-
-    echo "[N.E.E.B.L.E.S.] Descargando ${filename}..."
-
-    curl -LfsS \
-        --proto '=https' \
-        --tlsv1.2 \
-        --connect-timeout 4 \
-        --max-time 120 \
-        "${BASE_URL}/${filename}" \
-        -o "$destination" \
-        || fail "No fue posible descargar ${filename}."
-
-    actual_sha="$(sha256sum "$destination" | awk '{print $1}')"
-
-    [ "$actual_sha" = "$expected_sha" ] \
-        || fail "La verificación SHA-256 falló para ${filename}."
-
-    ASSET_PATHS["$asset_id"]="$destination"
-done < "$PLAN"
-
-for executable_id in backend ui installer auth_agent install runtime_resolver; do
-    chmod 700 "${ASSET_PATHS[$executable_id]}" \
-        || fail "No fue posible preparar ${executable_id}."
-done
+while IFS=$'\t' read -r asset_id filename; do
+    [ -n "$asset_id" ] || continue
+    ASSET_PATHS["$asset_id"]="$BOOTSTRAP_SESSION/$filename"
+done < <(tail -n +2 "$SESSION_INFO")
 
 BACKEND="${ASSET_PATHS[backend]}"
 UI="${ASSET_PATHS[ui]}"
@@ -203,118 +206,29 @@ AUTH_AGENT="${ASSET_PATHS[auth_agent]}"
 CLIENT_DATA="${ASSET_PATHS[client_data]}"
 INSTALL="${ASSET_PATHS[install]}"
 RUNTIME_RESOLVER="${ASSET_PATHS[runtime_resolver]}"
-RUNTIME_ARCHIVE="${ASSET_PATHS[runtime_archive]}"
-
-RUNTIME_DIR="$TMPDIR/runtime-authority"
-RUNTIME_MANIFEST="$RUNTIME_DIR/domestic-runtime.json"
+RUNTIME_MANIFEST="$BOOTSTRAP_SESSION/runtime-authority/domestic-runtime.json"
 AUTHORITY_SUPPLY="/usr/lib/neebles/platform/authority/authority-supply.json"
 
-python3 - \
-    "$RUNTIME_ARCHIVE" \
-    "$RUNTIME_DIR" \
-    <<'PY_RUNTIME' \
-    || fail "No fue posible materializar la autoridad doméstica bootstrap."
+for required_path in     "$BACKEND"     "$UI"     "$INSTALLER"     "$AUTH_AGENT"     "$CLIENT_DATA"     "$INSTALL"     "$RUNTIME_RESOLVER"     "$RUNTIME_MANIFEST"
+do
+    [ -f "$required_path" ]         || fail "El staging bootstrap perdió material requerido: ${required_path}"
+done
 
-from pathlib import Path, PurePosixPath
-import sys
-import tarfile
-
-archive_path = Path(sys.argv[1])
-destination = Path(sys.argv[2])
-
-destination.mkdir(
-    parents=True,
-    exist_ok=False,
-)
-
-with tarfile.open(
-    archive_path,
-    mode="r:gz",
-) as archive:
-    members = archive.getmembers()
-
-    if not members:
-        raise SystemExit(1)
-
-    names = {
-        member.name
-        for member in members
-    }
-
-    if "domestic-runtime.json" not in names:
-        raise SystemExit(1)
-
-    if not any(
-        name == "rootfs"
-        or name.startswith("rootfs/")
-        for name in names
-    ):
-        raise SystemExit(1)
-
-    for member in members:
-        pure = PurePosixPath(
-            member.name
-        )
-
-        if pure.is_absolute():
-            raise SystemExit(1)
-
-        if ".." in pure.parts:
-            raise SystemExit(1)
-
-        if not (
-            member.isdir()
-            or member.isfile()
-            or member.issym()
-        ):
-            raise SystemExit(1)
-
-    archive.extractall(
-        destination,
-        members=members,
-        filter="data",
-    )
-
-PY_RUNTIME
-
-[ -f "$RUNTIME_MANIFEST" ] \
-    || fail "La autoridad doméstica bootstrap no contiene domestic-runtime.json."
-
-[ -f "$AUTHORITY_SUPPLY" ] \
-    && [ -r "$AUTHORITY_SUPPLY" ] \
-    || fail "NEEBLES OS no suministró AuthoritySupply."
+[ -f "$AUTHORITY_SUPPLY" ]     && [ -r "$AUTHORITY_SUPPLY" ]     || fail "N.E.E.B.L.E.S. OS no suministró AuthoritySupply."
 
 echo "[N.E.E.B.L.E.S.] Ejecutando Boss ${STABLE_VERSION}..."
 
 if [ "$MODE" = "--interactive" ]; then
-    NEEBLES_AUTH_AGENT="$AUTH_AGENT" \
-        "$RUNTIME_RESOLVER" \
-        --manifest "$RUNTIME_MANIFEST" \
-        --execute-external "$INSTALLER" \
-        -- \
-        "$INSTALL" \
-        "$BACKEND" \
-        "$UI" \
-        "$CLIENT_DATA" \
-        "$RUNTIME_RESOLVER" \
-        "$RUNTIME_MANIFEST" \
-        "$AUTHORITY_SUPPLY" \
-        || fail "La instalación o actualización de Boss falló."
+    NEEBLES_AUTH_AGENT="$AUTH_AGENT"         "$RUNTIME_RESOLVER"         --manifest "$RUNTIME_MANIFEST"         --execute-external "$INSTALLER"         --         "$INSTALL"         "$BACKEND"         "$UI"         "$CLIENT_DATA"         "$RUNTIME_RESOLVER"         "$RUNTIME_MANIFEST"         "$AUTHORITY_SUPPLY"         || fail "La instalación o actualización de Boss falló."
 else
-    "$INSTALL" \
-        "$BACKEND" \
-        "$UI" \
-        "$CLIENT_DATA" \
-        "$AUTH_AGENT" \
-        "$RUNTIME_RESOLVER" \
-        "$RUNTIME_MANIFEST" \
-        "$AUTHORITY_SUPPLY" \
-        || fail "La instalación o actualización de Boss falló."
+    "$INSTALL"         "$BACKEND"         "$UI"         "$CLIENT_DATA"         "$AUTH_AGENT"         "$RUNTIME_RESOLVER"         "$RUNTIME_MANIFEST"         "$AUTHORITY_SUPPLY"         || fail "La instalación o actualización de Boss falló."
 fi
 
-[ -x "$NEEBLES_BIN" ] \
-    || fail "Boss no quedó instalado correctamente."
+[ -x "$NEEBLES_BIN" ]     || fail "Boss no quedó instalado correctamente."
 
 echo "[N.E.E.B.L.E.S.] Boss ${STABLE_VERSION} listo."
+
+cleanup
+trap - EXIT
 
 exec "$NEEBLES_BIN"

@@ -1,8 +1,8 @@
 {
   "schema": 1,
   "channel": "stable",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "file": "neebles-bootstrap",
-  "sha256": "9e3e717bbad3c28fec6e68639b508cf610a5cf1e843a8880d98a4886beaff143",
+  "sha256": "97ec550475b6a4c09830380db93d5283a0d6d8dcb81b6a3f23ec0fa9c4939839",
   "url": "https://raw.githubusercontent.com/krockzs/neebles-os/main/bootstrap/neebles-bootstrap"
 }
