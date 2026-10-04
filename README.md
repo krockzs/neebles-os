@@ -1,6 +1,6 @@
 # N.E.E.B.L.E.S. OS
 
-**Current integration status: Point 8 GREEN / CLOSED. Boss contract CLOSED.**
+**Current integration status (2026-10-04): Point 8 GREEN / CLOSED; Boss contract CLOSED; post-Live platform-boundary repair committed; next integrated OS image not yet rebuilt.**
 
 N.E.E.B.L.E.S. OS contains the operating-system-side configuration, bootstrap resources and canonical platform authority definitions of the N.E.E.B.L.E.S. ecosystem.
 
@@ -107,3 +107,25 @@ TEST MODULE                  NEXT: POINT 9 ADAPTATION
 ```
 
 With the Boss contract closed, Test Module may be adapted when Point 9 begins. Test Module remains a consumer of the closed Boss/OS authority contract and does not define platform authority semantics.
+
+
+## Post-Live platform-boundary repair — 2026-10-04
+
+Live testing exposed a real provider defect in the OS-owned filesystem boundary implementation. The old provider path attempted to copy an entire domestic top-level such as `rootfs/etc` when an external destination had to be introduced. As an ordinary user this could traverse root-only domestic files and fail before the requested boundary was established.
+
+The canonical OS provider was repaired so the domestic root remains read-only and an existing top-level is used as the lower layer of a Bubblewrap temporary overlay. The external file is then bound into that overlay. No byte-copy staging, privilege escalation or traversal of unrelated root-only material is required.
+
+Canonical source repair:
+
+```text
+neebles-os commit b3bd0896cdf5b03ee79f485ebdbe39b49362ed43
+platform/bin/neebles-boundary-provider
+```
+
+This repair was manually materialized into the Live session and validated as a normal user. With explicit AuthoritySupply, `modules available` then reached the N.E.E.B.L.E.S. Registry successfully and exposed Test Module.
+
+### Remaining entrypoint issue
+
+The platform supply itself is valid, but the ordinary direct `neebles` CLI entrypoint still does not automatically transport `--authority-supply`. The system runtime service does receive it. This is a Boss entrypoint-transport issue, not a reason to move platform-authority ownership out of OS.
+
+The next OS image must carry the committed provider repair. No new ISO is claimed by this README checkpoint.
