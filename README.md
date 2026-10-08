@@ -1,6 +1,6 @@
 # N.E.E.B.L.E.S. OS
 
-**Current integration status (2026-10-04):** canonical platform-authority source updated for the generic module runtime path; next integrated image not yet rebuilt; Fresh Live acceptance pending.
+**Current integration status (2026-10-08):** The integrated ISO is reported prepared in the CAST30 project handoff. Its real platform-authority and desktop-session behavior still require Fresh Live verification. Boss 1.0.30 preparation alone does not require rebuilding OS-owned ISO contents.
 
 N.E.E.B.L.E.S. OS is the operating-system-side source of bootstrap resources, platform authority semantics and platform boundary providers for the N.E.E.B.L.E.S. ecosystem.
 
@@ -256,17 +256,15 @@ Byte parity must be preserved while BUILD normalizes required ownership/modes.
 
 # Current image boundary
 
-The previous image predates the new runtime/module authorities.
+The integrated ISO is reported prepared in the CAST30 handoff, but the real Fresh Live acceptance must still verify every OS-owned authority and provider physically present in that image.
 
-Therefore a new ISO is required before final system acceptance.
-
-A Boss release update alone is insufficient because these OS-owned files/providers must physically exist in the Live image.
+A Boss-only 1.0.30 release does not by itself require ISO reconstruction. Rebuild only if fresh evidence identifies missing or stale OS-owned image resources.
 
 ---
 
 # Fresh Live acceptance
 
-The next image must prove:
+The next Fresh Live test must prove:
 
 ```text
 AuthoritySupply contains the complete current set
